@@ -1,0 +1,529 @@
+---
+layout: default_post
+title : Javascript基础之——函数详解
+---
+
+
+
+<h3>Javascript函数</h3>
+
+
+
+
+<h4>函数的定义</h4>
+
+
+<p>函数对任何语言来讲都是一个核心的概念，通过函数可以封装任意多条语句，而且可以在<strong>任何地方、任何时候调用执行</strong>。</p>
+<p>FUNCTION DEFINE: A function is a block of code that takes input, processes that input, and then produces output.</p>
+<p>ECMAScript中规定：使用function关键字来声明，后面跟一组参数以及函数体。</p>
+<p>一般情况下Javascript创建一个函数一般有以下两种方式：</p>
+<h5>函数声明</h5>
+
+	{% highlight javascript %}
+function functionName(arg1,arg2){
+   //函数体
+}
+	{% endhighlight %}
+
+<h5>函数表达式</h5>
+
+	{% highlight javascript %}
+var functionName = function(arg1,arg2){
+   //函数体
+}
+	{% endhighlight %}
+
+
+<p>函数声明和函数表达式两者的主要区别是：</p>
+<ul>
+    <li>函数声明会在代码执行前被加载到作用域（全局作用域）中；—— 有函数声明提升</li>
+    <li>函数表达式是在代码执行到那一行的时候才会有定义；—— 没有函数声明提升</li>
+</ul>
+
+<p>代码来解释：如果是函数声明的情况下</p>
+
+    {% highlight javascript %}
+alert(add(20,30));      // 50
+function add(num1,num2){
+   return num1 + num2;
+};
+    {% endhighlight %}
+
+<p>以上代码正常运行，会打印出50。因为在代码开始执行之前，解析器（javascriptCore）就已经通过函数声明提升（function declaration hoisting）的过程，读取并将函数声明添加到执行环境中。所以即使声明函数的代码在调用它的代码的后面，当代码开始执行之前，解析器早已把函数声明的代码提升到了作用域顶部。</p>
+
+<p>如果是函数表达式的情况下：</p>
+
+    {% highlight javascript %}
+alert(add(20,30));      // Uncaught TypeError: undefined is not a function 
+var add = function(num1,num2){
+   return num1 + num2;
+};
+    {% endhighlight %}
+
+<p>以上代码运行会出现错误： <img src="/img/typeError1.jpg" alt="类型错误1"></p>
+<p>原因在于：函数表达式中的函数位于一个初始化的语句中，而不是一个函数声明。在执行到函数所在的语句（定义）之前，变量add中不会保存有多函数的引用。</p>
+<p>另一个区别是函数声明会给函数指定一个名字，而函数表达式则创建一个匿名函数，然后将这个函数赋给一个变量。</p>
+
+
+
+
+
+
+
+<h4>函数的调用</h4>
+
+<p>函数通过函数名来调用，后面加上一对圆括号和参数（如果有参数的话）。</p>
+<p>在Javascript中，有一个数据类型是Function类型，而每个函数都是Function的实例。而且，有意思的是，<strong>函数实际上也是对象</strong>。它同其他引用类型一样具有属性和方法。由于函数是对象，所以函数名实际上也是一个指向函数对象的指针，不会与某个函数绑定。换句话说，一个函数可能有多个名字。</p>
+
+    {% highlight javascript %}
+function add(num1,num2){
+   return num1 + num2;
+};
+alert(add(10,20));            // 30
+var anotherAdd = add;
+alert(add(10,20));            // 30
+add = null;
+alert(anotherAdd(10,20));     // 30
+    {% endhighlight %}
+
+<p>以上代码首先定义了个名为add的函数，用于求两个值的和。然后又声明了变量anotherAdd，并将其设置为和add相等（将变量add指向的函数体赋给anotherAdd），因为<strong>使用不带括号的函数名是访问函数指针，而不是调用函数；函数名后面接圆括号才是调用函数</strong>，此时anotherAdd和add就都指向了同一个函数，因此anotherAdd也可以被调用并返回结果。即使后来手动将add设置为null，此时只是解除了add和函数体的映射关系，并不会影响到anotherAdd和函数体的映射关系，所以anotherAdd仍然可以正常调用函数体并返回结果。</p>
+
+
+
+<h5>递归调用</h5>
+<p>递归函数是在一个函数通过名字调用自身的情况下构成的，比如：</p>
+
+    {% highlight javascript %}
+function factorial(num){
+    if(num <= 1){
+        return 1;
+    }  else {
+        return num * factorial(num-1);
+    }     
+};
+var result = factorial(5);
+alert(result);     // 120
+    {% endhighlight %}
+
+<p>这是一个经典的递归阶乘函数。执行函数时候会调用自身五次，返回5*4*3*2*1 的结果是120。但是如果稍微改写一下函数；</p>
+
+    {% highlight javascript %}
+function factorial(num){
+    if(num <= 1){
+        return 1;
+    }  else {
+        return num * factorial(num-1);
+    }     
+};
+var anotherFactorial = factorial;
+factorial = null;
+var result = anotherFactorial(5);
+alert(result);     // Uncaught TypeError: object is not a function 
+    {% endhighlight %}
+
+<p>以上代码运行会出现错误：<img src="/img/typeError2.jpg" alt="类型错误2">。原因是因为将函数factorial（）保存在另一个变量anotherFactorial中，然后将factorial变声设置为null,这个时候指向原函数的引用只剩下一个。但在接下来调用anotherFactorial（）的时候，由于要执行factorial（），而factorial已经不再是函数，所以就会导致错误。</p>
+<p>所以发现，再函数里面调用自身的时候，写上自身函数的名字并不是一个好办法（没有与函数名解耦，不方便扩展），所以Javascript规范定义了另外一种可以在函数内部调用自身的方式，即通过<strong>arguments.callee</strong>调用自身。所以上述代码可以写成：</p>
+
+    {% highlight javascript %}
+function factorial(num){
+    if(num <= 1){
+        return 1;
+    }  else {
+        return num * arguments.callee(num-1);
+    }     
+};
+var anotherFactorial = factorial;
+factorial = null;
+var result = anotherFactorial(5);
+alert(result);     // 120
+    {% endhighlight %}
+
+<p>其实，arguments.callee是一个指向正在执行的函数的指针，因此可以用它来实现对函数的递归调用，可以确保无论怎样调用函数都不会出问题。</p>
+
+
+
+<h4>函数的返回值</h4>
+
+<p>ECMAScript中规定：函数在定义时不必指定是否有返回值。实际上，任何函数在任何时候都可以通过return语句后面加上要返回的值来实现返回值。</p>
+
+<p>看刚才的例子：</p>
+
+    {% highlight javascript %}
+alert(add(20,30));      // 50
+function add(num1,num2){
+   return num1 + num2;
+};
+    {% endhighlight %}
+
+<p>这个函数add()的作用就是把两个值加起来返回一个结果。这个函数会在return语句之后停止并立即退出，因此位于return语句之后的代码将永远都不会执行。</p>
+
+
+    {% highlight javascript %}
+function add(num1,num2){
+   return num1 + num2;
+   alert("I'm Superman!");   // 永远都不会执行
+};
+var result = add(30,50);
+alert(result);   // 80 
+    {% endhighlight %}
+
+<p>当然，一个函数可以包含多个return语句，比如下面这个例子；</p>
+
+    {% highlight javascript %}
+function whichBigger(num1,num2){
+    if(num1 < num2){
+        return num2 - num1;
+    } else {
+        return num1 - num2;
+    }
+};
+var result1 = whichBigger(20,30);
+var result2 = whichBigger(50,30);
+alert(result1);     // 10
+alert(result2);     // 20
+    {% endhighlight %}
+
+
+<p>这个函数whichBigger()用于计算两个数值的差，如果第一个数比第二个数小，则用第二个数减第一个数；否则，用第一个数减第一个数，并分别返回。</p>
+
+<p>最后，return语句页可以不带有任何返回值，这种情况下，函数在停止执行后，将返回undefined值。</p>
+
+    {% highlight javascript %}
+function sayName(name){
+    return;
+    alert("my name is" + name + "!");    // 永远不会调用
+};
+var result = sayName("bobby");
+alert(result);     // undefined
+    {% endhighlight %}
+
+<p>函数return不带返回值，其实会有一个undifined返回值，这也是javascript前端面试经常容易出题的考察点。</p>
+
+
+
+
+
+<h4>函数的参数、和参数传递</h4>
+
+<p>在Javascript中，函数的参数与其他大多数语言中函数的参数有很大的不同。因为在ECMAScript规范中确定<strong>函数的参数不是必须的</strong>。函数不介意传递进来多少参数，也不在乎传进来参数是什么数据类型（弱类型语言的特点，类型检查不严格）。换句话说，即使你定义的函数只接受两个参数，在调用的时候这个函数也未必一定要传递两个参数，可以传递一个、三个参数，也可以完全不传递参数。而解析器用永远都会解析（不会报错）。</p>
+
+<p>FUNCTION ARGUMENTS DEFINE:  A function can be declared to receive any number of arguments. Arguments can be from any type. An argument could be a string, a number, an array, an object and even another function.</p>
+
+    {% highlight javascript %}
+function howManyArgs(){
+    alert(arguments.length);    
+};
+howManyArgs("string", 45);               // 2
+howManyArgs();                           // 0
+howManyArgs(12);                         // 1
+howManyArgs([1,2,3],{name : "mary"},23)  // 3
+    {% endhighlight %}
+
+<p>以上代码首先定义了一个函数，运行函数会打印出函数的参数的数量。调用函数的时候，传入不同的参数，则会显示不同的结果。</p>
+<p>之所以会这样，是因为在ECMAScritp规范中，<strong>参数在内部是由一个数组来表示的</strong>。函数接受到的始终都是这个数组，而不管数组中包含哪些参数（如果有参数的话），如果这个数组不包含任何元素也行；如果包含多个元素也可以。</p>
+<p>如果你想访问这个数组，可以使用函数的arguments对象来访问这个参数数组，从而获取每一个传递给函数的每一个参数。（这也就是不同javascript开发者可以写出代码风格差异很大的原因之一，但我觉得这同时也是javascript独特的魅力之所在。）</p>
+
+    {% highlight javascript %}
+function add(num1, num2){
+    return num1 + num2;
+};
+alert(add(20,30));                    // 50
+alert(add("hello ,", 30));            // hello ,30
+alert(add("hello ,", " world !"));    // hello , world !
+    {% endhighlight %}
+
+<p>这段代码可以写成另外一种风格；</p>
+
+    {% highlight javascript %}
+function add(){
+    return arguments[0] + arguments[1];
+};
+alert(add(20,30));                    // 50
+alert(add("hello ,", 30));            // hello ,30
+alert(add("hello ,", " world !"));    // hello , world !
+    {% endhighlight %}
+
+<p>甚至你还可以这样写：</p>
+
+    {% highlight javascript %}
+function add(){
+    var result = null;
+    for(var i = 0, n = arguments.length; i < n; i++){
+        result += arguments[i];
+    }
+    return result;;
+};
+alert(add(20,30));                    // 50
+alert(add("hello ,", 30));            // hello ,30
+alert(add("hello ,", " world !"));    // hello , world !
+    {% endhighlight %}
+
+
+<p>另外，函数的命名的参数页可以和arguments对象混合使用，比如上面的函数可以写成这样：</p>
+    {% highlight javascript %}
+function add(num1,num2){
+    if(arguments.length === 1){
+        return (num1 + 30);
+    } else if (arguments.length === 2){
+        return (arguments[0] + num2);
+    }
+};
+alert(add(20));                       // 50
+alert(add("hello ,", 30));            // hello ,30
+alert(add("hello ,", " world !"));    // hello , world !
+    {% endhighlight %}
+
+
+
+<p>可以看出重写函数后，两个命名参数都与arguments对象一起使用了，由于num1的值与arguments[0]的值相同，因此他们可以互换使用，同理num2的值与arguments[1]也是如此。</p>
+
+<p>所以可以轻松得出结论：<strong>arguments对象的长度是由传入的参数个数决定的，不是由定义函数时的命名参数的个数决定的</strong>。</p>
+
+<p>那如果出现没有传递值的参数会出现什么情况呢？</p>
+
+    {% highlight javascript %}
+function add(){
+    return arguments[0] + arguments[1] + arguments[2];
+};
+alert(add(20,30));                    // NaN
+alert(add("hello ,", 30));            // hello ,30undefined
+alert(add("hello ,", " world !"));    // hello , world !undefined
+    {% endhighlight %}
+
+<p>可以看到，定义函数的时候有三个参数arguments[0]、arguments[1]、arguments[2]但是调用的时候，三次调用都只传递了两个参数的情况下，解析器会把第三个参数自动赋值为undefined。这就和定义了变量但没有赋值（初始化）的时候（或者执行到赋值语句之前的时候）解析器会自动赋值为undefined一样的机制。</p>
+
+
+
+
+
+
+<h4>函数值的传递</h4>
+<p>在Javascript中，函数名是指向函数对象的指针，其本身就是变量，而函数也可以作为返回值来使用。也就是说，不仅可以像传递参数一样把一个函数传递给另外一个函数，而且可以将一个函数作为另外一个函数的结果返回。</p>
+<p>但是：JS 中参数的传递方式只有一种：<strong>即所有参数都是按值传递</strong>。也就是说数字、字符串等按值传递；数组、对象等按也是按值传递。（虽然数组、对象等的按值传递与数字、字符串还是有所不同的。）</p>
+
+    {% highlight javascript %}
+var v1 = [1,2,3];
+var v2 = {};
+var v3 = {a:123};
+function fn1(v1, v2, v3){
+    v1 = [1];
+    v2 = [2];
+    v3 = {a:3};
+}
+
+fn1(v1, v2, v3);
+alert(v1);     // [1,2,3]
+alert(v2);     // [object Object]
+alert(v3.a);   // 123
+    {% endhighlight %}
+
+<p>观察以上代码，可以看出：v1、v2、v3 都没有被改变，v1 仍然是值为[1,2,3]的数组，v2是空白的对象，v3是具有值为123的属性a的对象。因为数组、对象等按值传递，是指变量地址的值。在函数内部我们为 v1、v2、v3 赋了值，也就是说我们把v1、v2、v3的指针的指向改变了，指向了新的数组和对象。这样内部的 v1、v2、v3 和外部的 v1、v2、v3 的联系就完全断了。下面代码可以印证：</p>
+
+    {% highlight javascript %}
+var v1 = [1,2,3];
+var v2 = {};
+var v3 = {a:123};
+function fn1(v1, v2, v3){
+    v1 = [1];
+    v2 = [2];
+    v3 = {a:3};
+    alert(v1);     // [1]
+    alert(v2);     // [2]
+    alert(v3.a);   // 3
+}
+
+fn1(v1, v2, v3);
+alert(v1);     // [1,2,3]
+alert(v2);     // [object Object]
+alert(v3.a);   // 123
+    {% endhighlight %}
+
+<p>而如果我们在函数fn1里面，没有为v1、v2、v3赋新值，而是直接操作它的话：</p>
+
+    {% highlight javascript %}
+var v1 = [1,2,3];
+var v2 = {};
+var v3 = {a:123};
+function foo(v1, v2, v3)
+{
+    v1.push(1);
+    v2.a = 2;
+    v3.a = 33;
+}
+
+foo(v1, v2, v3);
+alert(v1);     // [1,2,3,1]
+alert(v2.a);   // 2
+alert(v3.a);   // 33
+    {% endhighlight %}
+
+<p>可以看出：在函数fn1里面，没有为v1、v2、v3赋新值，而是直接操作它，那么，它操作到的，仍然是和外面的 v1、v2、v3 指向的同一块数组或对象。</p>
+
+<p>前面说过，虽然函数的参数都是按值传递，但是数组、对象等引用类型的按值传递与数字、字符串等基本类型的按值传递不同点在于：</p>
+<ul>
+    <li>数字、字符串是把值直接复制进去来实现的；</li>
+    <li>数组、对象是把变量地址复制进去来实现的；</li>
+</ul>
+
+<p>那么，引用类型的值是什么呢？</p>
+<p>当一个变量向另一个变量复制引用类型的值时，<strong>会将存储在栈中的值（栈中存放的值是对应堆中的引用地址）复制一份到为新变量分配的空间中。</strong>引用类型的值实际上是对其引用对象的一个指针。</p>
+<p></p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h4>函数没有重载</h4>
+
+<p>在一些其他语言比如Java语言中，可以为一个函数编写两个定义，只要这两个定义的签名（接受的参数的类型和数量）不同即可。</p>
+<p>但是ECMAScript规定：Javascript中的函数没有签名，因为<strong>其参数是由包含零或多个值的数组来表示的。</strong>而没有函数签名，真正的重载是不可能做到的。</p>
+
+<p>通俗的理解：如果定义了两个名字相同的函数，则该名字只属于后定义的函数（即后定义的函数会覆盖前面定义的函数）。</p>
+
+    {% highlight javascript %}
+function addNum(num){
+    return num + 100;
+};
+function addNum(num){
+    return num + 200;
+};s
+var result = addNum(500);
+alert(result);     // 700
+    {% endhighlight %}
+
+<p>因为函数名是指针，而且存在函数声明，所以上面代码可以改写成一下这样：</p>
+
+
+    {% highlight javascript %}
+var addNum;
+addNum = function(num){
+    return num + 100;
+};
+addNum = function(num){
+    return num + 200;
+};
+var result = addNum(500);
+alert(result);     // 700
+    {% endhighlight %}
+
+
+<p>通过观察重写之后的函数代码，很容易就可以看出，后面定义的函数体（赋值给同名变量addNum）覆盖了前面的函数定义的赋值过程，将指针指向了新的函数代码，变量addNum跟前面定义的函数体已经没有了映射关系，所以函数不具有重载的特性。</p>
+
+
+
+<!-- <p>参考<a href="http://www.cnblogs.com/youxin/p/3354903.html" target="_blank">JS 中没有按地址（引用）传递，只有按值传递</a></p> -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 
+
+<h4>什么是事件？</h4>
+<p>事件(Event)是JavaScript应用跳动的心脏 ，也是把所有东西粘在一起的胶水。当我们与浏览器中 Web 页面进行某些类型的交互时，事件就发生了。事件可能是用户在某些内容上的点击、鼠标经过某个特定元素或按下键盘上的某些按键。事件还可能是 Web 浏览器中发生的事情，比如说某个 Web 页面加载完成，或者是用户滚动窗口或改变窗口大小。</p>
+<p>通过使用 JavaScript ，你可以监听特定事件的发生，并规定让某些事件发生以对这些事件做出响应。</p>
+
+ -->
+
+
+
+
+
+
+
+<!-- 
+
+
+<h3>Javascript闭包</h3>
+
+
+<h4>作用域和执行环境</h4>
+
+<p> JavaScript 的执行中会一直存在一个 Execute Context Stack (想想 JavaScript 解释器在看到一个 alert(x) 的时候, 如果没有上下文他怎么知道这个 x 是什么?), Execute Context Stack 中最下面一个一定是 GlobalContext, 而在每一个函数的执行开始就会向这个 stack 中压入一个此 Function 的 Execution Context; 而一个 Execution Context 的组成分为三部分: </p>
+
+<ul>
+	<li>variable Object: 存储方法内的变量 vars, 方法传入的参数, 函数内定义的函数等等(函数表达式不保存), Variable Object 在任何时候是不可以被直接访问到的, 当然不同的 JS 引擎提供了访问接口就说不定了;</li>
+	<li>scope Chain: 这个函数执行的时候用以寻找值的 Scope Chain, 这个 Scope Chain 由 Variable Object + All Parent Scopes 组成, Variable Object 会放在这个 Scope Chain 的最前面, 这也是为什么函数内的变量会被最先找到;</li>
+	<li>thisValue, 函数被调用的时候的 this 对象, 存储的就是函数的调用者(caller)的引用; </li>
+</ul>
+<p>对于 Variable Object 在不同的情况下会有不同的定义, 例如在全局的时候被称为 Global Object, 而在函数中则被称为 Activation Object 激活对象; </p>
+
+
+
+<h4>闭包</h4>
+
+
+<p>简单来说：闭包（first-class function with lexical scope。）就是由函数创造的一个词法作用域，里面创建的变量被引用后，可以在这个词法环境之外自由使用。</p>
+
+<p>闭包通常用来创建内部变量，使得这些变量不能被外部随意修改，同时又可以通过指定的函数接口来操作。</p>
+
+<p>First-class function 决定了函数可以在另一个函数内部被定义，并且作为 return value 返回。</p>
+
+	{% highlight javascript %}
+var foo = ( function() {
+    var secret = 'secret';
+    // “闭包”内的函数可以访问 secret 变量，而 secret 变量对于外部却是隐藏的
+    return {
+        get_secret: function () {
+            // 通过定义的接口来访问 secret
+            return secret;
+        },
+        new_secret: function ( new_secret ) {
+            // 通过定义的接口来修改 secret
+            secret = new_secret;
+        }
+    };
+} () );
+
+foo.get_secret (); // 得到 'secret'
+foo.secret; // Type error，访问不能
+foo.new_secret ('a new secret'); // 通过函数接口，我们访问并修改了 secret 变量
+foo.get_secret (); // 得到 'a new secret'
+	{% endhighlight %}
+
+
+<p>引用 Douglas Crockford (Javascript大牛，json发明者) :</p>
+
+<p>之所以可能通过这种方式在 JavaScript 种实现公有，私有，特权变量正是因为闭包，闭包是指在 JavaScript 中，内部函数总是可以访问其所在的外部函数中声明的参数和变量，即使在其外部函数被返回（寿命终结）了之后。</p>
+
+
+<p>需要注意的一点时，内部函数访问的是被创建的内部变量本身，而不是它的拷贝。所以在闭包函数内加入 loop 时要格外注意。另外当然的是，闭包特性也可以用于创建私有函数或方法。</p>
+
+
+<p>关于为什么在 JavaScript 中闭包的应用都有关键词“return”，引用 JavaScript 秘密花园中的一段话：</p>
+<p>闭包是 JavaScript 一个非常重要的特性，这意味着当前作用域总是能够访问外部作用域中的变量。 因为 函数 是 JavaScript 中唯一拥有自身作用域的结构，因此闭包的创建依赖于函数。</p>
+
+<h4>闭包的作用</h4>
+<p>闭包可以用在许多地方。它的最大用处有两个，一个是前面提到的可以读取函数内部的变量，另一个就是让这些变量的值始终保持在内存中。</p>
+<p>通俗来说闭包的作用在于值的传递，或生命周期的传递，或变量的存活时间，闭包给了变量第二次生命，使他躲过内存标记，在外层函数调用完之后，成功的存活下来。。</p>
+
+<p class="pege_tail">参考<a href="http://blog.sina.com.cn/s/blog_912389e5010120n2.html" target="_blank">js之匿名函数</a></p>
+<p>参考<a href="http://www.cnblogs.com/binyong/articles/1750263.html" target="_blank">理解Javascript的事件处理机制</a></p>
+
+
+ -->
+

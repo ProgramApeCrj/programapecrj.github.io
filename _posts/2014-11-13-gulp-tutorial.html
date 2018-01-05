@@ -1,0 +1,189 @@
+---
+layout: default_post
+title : 前端gulp使用教程
+---
+
+
+<h3>gulp介绍</h3>
+<p><a href="http://gulpjs.com/" target="_blank" rel="nofollow">gulp官网</a>的介绍：The streaming build system.大概意思就是任务流构建系统。顾名思义：就是一套帮助我们做基础的任务的一种工具。比如可以帮我自动编译less成css文件啦，自己检查javascript语法错误啦，自动合并js文件啦，打包压缩js文件啦等等之类的以前需要我们去手动或者通过工具实现的功能或任务，现在gulp可以一次性帮我们自动构建好，只要我们在命令行输入一条命令，他就会自动帮我们完成。</p>
+
+<p>对比大热的grunt前端构建工具，我觉得他又如下四点优势，就如官方所说的那样：</p>
+
+<ul>
+    <li>
+        Easy to use —— 易于配置和使用 （利用管道流配置，是复杂的任务管理简单化处理）
+    </li>
+    <li>
+        Efficient —— 执行高效 （利用管道流快速构建，不写中间文件到磁盘，所以速度更快）
+    </li>
+    <li>
+        High Quality —— 高质量 （严谨插件引导和检查机制，插件只专注于自己的功能快速实现）
+    </li>
+    <li>
+        Easy to Learn —— 易于学习（仅有5个API,用5个方法就能管理所有的任务流）
+    </li>
+</ul>
+
+
+
+
+<h3>gulp安装</h3>
+
+
+
+<h4>前提：安装node和npm</h4>
+
+<p>第一步：安装node （Mac系统可以使用homebrew工具安装node，win系统可以去node官网下载安装）</p>
+	{% highlight javascript %}
+sudo brew install node  
+	{% endhighlight %}
+
+<p>第二步：安装npm （同上）</p>
+	{% highlight javascript %}
+sudo brew install npm  
+	{% endhighlight %}
+
+<p>安装完成输入命令: <br/><code>node -v</code> 查看node版本号<br/><code>npm -v</code> 查看npm版本号</p>
+
+
+<h4>开始：使用npm安装gulp</h4>
+
+<p>第三步：全局安装gulp</p>
+	{% highlight javascript %}
+sudo npm install -g gulp
+	{% endhighlight %}
+
+<p>安装完成输入命令：<br/><code>gulp -v</code> 查看全局gulp版本号</p>
+
+
+<p>第四步：进入具体项目文件夹安装gulp</p>
+	{% highlight javascript %}
+sudo npm install --save-dev gulp
+	{% endhighlight %}
+<p>这里使用了–save-dev标示符，它用来告诉npm将我们添加的依赖模块放入package.json文件的devDependencies字段中。</p>
+
+<p>第五步：安装依赖，一条条命令安装需要的gulp插件到当前目录</p>
+	{% highlight javascript %}
+npm install gulp-jshint --save-dev 
+npm install gulp-sass --save-dev 
+npm install gulp-less --save-dev 
+npm install gulp-minify-css --save-dev 
+npm install gulp-concat --save-dev 
+npm install gulp-uglify --save-dev 
+npm install gulp-rename --save-dev 
+	{% endhighlight %}
+
+<p>也可以简化成一条命令：</p>
+
+    {% highlight javascript %}
+npm install gulp-jshint gulp-sass gulp-less gule-minify-css gulp-concat gulp-uglify gulp-rename --save-dev  
+    {% endhighlight %}
+
+<p>上面的命令行将会安装我们所需要的所有插件并且将它么添加到package.json文件的devDependencies字段中。</p>
+
+
+<p>第六步：新建gulpfile.js配置文件，处理任务流</p>
+<p>现在所有的插件都可以使用了，我们可以开始编写我们的gulpfile文件并且指示gulp来执行这些任务了。</p>
+<p>tips：gulp仅仅只有5个方法。依次如下：task、src、run、watch以及dest。你只需要用这5个方法就可以编写所有的任务。</p>
+
+<h3>gulp配置文件</h3>
+
+
+
+	{% highlight javascript %}
+
+// 引入 gulp
+var gulp = require('gulp'); 
+
+
+
+// 引入组件（插件）
+var jshint = require('gulp-jshint');
+var sass = require('gulp-sass');
+var less = require('gulp-less');
+var minifyCSS = require('gulp-minify-css');
+var concat = require('gulp-concat');
+var uglify = require('gulp-uglify');
+var rename = require('gulp-rename');
+
+
+
+
+// 脚本语法检查
+gulp.task('lint', function() {
+    gulp.src('./js/*.js')
+        .pipe(jshint())
+        .pipe(jshint.reporter('default'));
+});
+
+
+
+// 编译Sass
+gulp.task('sass', function() {
+    gulp.src('./scss/*.scss')
+        .pipe(sass())
+        .pipe(gulp.dest('./css'));
+});
+
+
+
+// 编译less  
+gulp.task('less',function(){
+    gulp.src('./css/*.less')
+        .pipe(less())
+        .pipe(gulp.dest('./css'));
+});  
+
+
+// 压缩css
+gulp.task('minify-css', function() {
+    gulp.src('./css/*.css')
+        .pipe(minifyCSS({keepBreaks:true}))
+        .pipe(gulp.dest('./dist'));
+});
+
+
+// 合并，重命名，压缩文件
+gulp.task('scripts', function() {
+    gulp.src('./js/*.js')
+        .pipe(concat('all.js'))
+        .pipe(gulp.dest('./dist'))
+        .pipe(rename('all.min.js'))
+        .pipe(uglify())
+        .pipe(gulp.dest('./dist'));
+});
+
+
+
+
+
+// 默认任务
+gulp.task('default', function(){
+    gulp.run('lint', 'sass',  'less', 'minify-css', 'scripts');
+
+    // 监听文件变化
+    gulp.watch('./js/*.js', function(){
+        gulp.run('lint',  'scripts');
+    });
+
+    // 监视scss文件的变化   
+    gulp.watch('./scss/*.scss',function(){
+        gulp.run('sass');
+    });
+
+    // 监视less文件的变化   
+    gulp.watch('./less/*.less',function(){
+        gulp.run('less');
+    });
+
+});
+
+
+	{% endhighlight %}
+
+
+<p>当我们在当前目录运行gulp命令的时候，就会启动并运行默认的task，我本地测试截图如下：</p>
+
+<img src="/img/gulp_result.jpg" alt="">
+
+<p>可以看到执行完default任务耗时28毫秒，JS语法检查报了两个错误。由于对项目中less(或者css)文件夹和JS文件夹分别添加了处理任务，所以每当对这两个文件夹内文件进行改动的时候，就会触发相对应的任务流执行任务处理，并给出相应的提示。</p>

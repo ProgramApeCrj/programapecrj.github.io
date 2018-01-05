@@ -1,0 +1,119 @@
+---
+layout: default_post
+title : CSS3的一些应用
+---
+
+<h3>CSS3背景颜色渐变</h3>
+
+<p>对于背景渐变每个浏览器都没有达成统一的解析语法，所以我们不得不为各个浏览器写不同的样式规则：</p>
+
+
+
+<h4>Webkit引擎</h4>
+<code><strong>语法结构：</strong>-webkit-gradient(&lt;type>, &lt;point> [, &lt;radius>]?, &lt;point> [, &lt;radius>]? [, &lt;stop>]*)</code>	
+	{% highlight css %}
+background: -webkit-gradient(linear, 0 0, 0 100%, from(red), to(blue));
+	{% endhighlight %}
+
+<p>其实规则很好记，也很好理解，多写几遍就熟悉了：</p>
+<ul>
+	<li>渐变的类型 —— (linear)</li>
+	<li>渐变开始的X Y 轴坐标 —— (0 0 – 或者left top)</li>
+	<li>渐变结束的X Y 轴坐标 —— (0 100% 或者left bottom)</li>
+	<li>开始的颜色 —— (from(red) 或者form(#3a3a3a))</li>
+	<li>结束的颜色 —— (to(blue) 或者to(#6c6c6c))</li>
+</ul>
+
+
+
+
+
+
+
+<h4>Mozilla引擎</h4>
+<code><strong>语法结构：</strong>-moz-linear-gradient( [&lt;point> || &lt;angle>,]? &lt;stop>, &lt;stop> [, &lt;stop>]</code>	
+	{% highlight css %}
+background: -moz-linear-gradient(top, red, blue);
+	{% endhighlight %}
+
+<p>规则更简单了：</p>
+<ul>
+	<li>请注意我们将渐变的类型 —— linear —— 放到了属性前缀中了</li>
+	<li>渐变从哪里开始 —— (top – 我们也可以使用度数，比如-45deg)</li>
+	<li>开始的颜色 —— (red) 或者(#3a3a3a))</li>
+	<li>结束的颜色 —— (blue) 或者(#6c6c6c))</li>
+</ul>
+
+
+
+
+
+
+
+
+<h4>IE引擎</h4>
+<p>IE并不支持CSS渐变，但是提供了渐变滤镜，可以实现最简单的渐变效果：</p>
+	{% highlight css %}
+filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#ff0000' grandientType=1); /* IE6,IE7 */
+-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#ff0000')"; /* IE8 */
+	{% endhighlight %}
+
+	
+<ul>
+	<li>startColorstr —— 渐变起始位置的颜色</li>
+	<li>endColorstr —— 渐变终止位置的颜色</li>
+	<li>grandientType —— 渐变的类型（0：代表竖向渐变，1：代表横向渐变）</li>
+</ul>
+	
+
+
+
+
+
+
+
+
+
+
+
+
+<h3>CSS3 transition的应用</h3>
+
+
+<h4>一般来说，transition有下列几种参数</h4>
+
+	{% highlight css %}
+	transition-property : all;
+transition-duration : 2s;
+transition-timing-function : linear;
+transition-delay : 1s;
+
+	{% endhighlight %}
+
+
+<p><strong>transition-property：</strong>变换延续的时间</p>
+<p><strong>transition-duration：</strong>在延续时间段</p>
+<p><strong>transition-timing-function：</strong>变换速度变化,它的值允许你根据时间的推进去改变属性值的变换速率，有6个可能值：</p>
+<p>
+	<ul>
+		<li>1、ease：（逐渐变慢）默认值，ease函数等同于贝塞尔曲线(0.25, 0.1, 0.25, 1.0)；</li>
+		<li>2、linear：（匀速），linear 函数等同于贝塞尔曲线(0.0, 0.0, 1.0, 1.0)；</li>
+		<li>3、ease-in：(加速)，ease-in 函数等同于贝塞尔曲线(0.42, 0, 1.0, 1.0)；</li>
+		<li>4、ease-out：（减速），ease-out 函数等同于贝塞尔曲线(0, 0, 0.58, 1.0)；</li>
+		<li>5、ease-in-out：（加速然后减速），ease-in-out 函数等同于贝塞尔曲线(0.42, 0, 0.58, 1.0)；</li>
+		<li>6、cubic-bezier：（该值允许你去自定义一个时间曲线）， 特定的cubic-bezier曲线。 (x1, y1, x2, y2)四个值特定于曲线上点P1和点P2。所有值需在[0, 1]区域内，否则无效。</li>
+	</ul>
+</p>
+<p><strong>transition-delay：</strong>变化延迟时间</p>
+
+
+
+
+<p class="pege_tail">参考<a href="http://www.php100.com/html/webkaifa/DIV_CSS/2012/1029/11403.html" target="_blank">CSS3中的Transition属性详解</a></p>
+
+
+
+
+
+
+
