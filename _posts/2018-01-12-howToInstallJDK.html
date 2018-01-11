@@ -1,0 +1,146 @@
+---
+layout: default_post
+title : 如何安装并配置JDK（分类：图文教程）
+---
+
+
+<h5>前言：由于电脑进行了重装，所有环境都丢失了，只能从0开始弄啦，将过程作为教程保留下来。</h5>
+<br>
+<br>
+内容导航
+<ul>
+<li>一.安装jdk</li>
+<li>二.配置环境变量--办法1</li>
+<li>三.配置环境变量--办法2</li>
+<li>四.测试是否成功</li>
+</ul>
+
+<br>
+
+<h3>一.安装jdk</h3>
+<h4>01.登录JDK官网，点击下载(这里我下的是jdk8)
+http://www.oracle.com/technetwork/java/javase/downloads/index.html
+<img src="{{site.url}}/img/18-01-12.01.png"/>
+<h4>
+<br>
+
+<h4>02.点击同意协议，然后下载
+<img src="{{site.url}}/img/18-01-12.02.png"/>
+</h4>
+<br>
+
+<h4>
+03.安装(更改成你想要的路径)
+<p>前面一张图是安装JDK，JDK其实就自带了jre，称为专用jre。后面一张图独立安装的jre称为公共jre。
+公共jre的作用是向系统和浏览器注册Java运行环境，以及提供了一些Java更新服务。</p>
+<img src="{{site.url}}/img/18-01-12.03.png"/>
+<img src="{{site.url}}/img/18-01-12.04.png"/>
+</h4>
+<br>
+
+
+
+<h3>二.配置环境变量--办法1</h3>
+
+<h4>
+01. 打开环境变量设置窗口（我的系统是win10）
+<img src="{{site.url}}/img/18-01-12.05.png"/>
+</h4>
+<br>
+
+<h4>
+02.在系统变量那里,点击“新建”按钮，创建系统变量JAVA_HOME
+<p><font color="red">注:JAVA_HOME= 你的jdk安装目录</font></p>
+<img src="{{site.url}}/img/18-01-12.06.png"/>
+</h4>
+<br>
+
+
+<h4>
+03.点击path 的“编辑”按钮，添加%JAVA_HOME%\bin
+<img src="{{site.url}}/img/18-01-12.07.png"/>
+</h4>
+<br>
+
+<h4>
+04.点击“新建”按钮，创建系统变量classpath，添加
+.;%JAVA_HOME%\lib\dt.jar; %JAVA_HOME%\lib\tools.jar
+<p><font color="red">注:前面的点和分号不要漏</font></p>
+
+<img src="{{site.url}}/img/18-01-12.08.png"/>
+</h4>
+<br>
+
+
+<h3>三.配置环境变量--办法2</h3>
+<p><font color="red">注:如果办法1搞定了就不用看办法2啦，办法2是教你如何<span style="text-decoration:line-through;">优雅节省时间</span>偷懒。</font></p>
+<br>
+<h4>
+01.创建一个文档,改成.bat后缀，输入下面的内容（JDK目录记得改成自己的）
+<textarea name="inroduction" cols ="90" rows="20">
+::如果有的话，先删除JAVA_HOME
+wmic ENVIRONMENT where "name='JAVA_HOME'" delete
+
+::如果有的话，先删除CLASSPATH
+wmic ENVIRONMENT where "name='CLASSPATH'" delete
+
+::配置JAVA_HOME
+wmic ENVIRONMENT create name="JAVA_HOME",username="<system>",VariableValue="自己的JDK目录" 
+
+::配置CLASSPATH
+wmic ENVIRONMENT create name="CLASSPATH",username="<system>",VariableValue=".;%%JAVA_HOME%%\lib\dt.jar;%%JAVA_HOME%%\lib\tools.jar"  
+
+::配置PATH
+wmic ENVIRONMENT where "name='PATH' and username='<system>'" set VariableValue="%path%;%%JAVA_HOME%%\bin"
+
+pause 
+</textarea>
+</h4>
+<br>
+
+
+<h4>
+02.然后保存,右键,以管理员身份运行
+<p><font color="red">注:运行之后要打开系统环境变量瞄一眼，再保存，这样才能生效。
+如果不生效，请重启电脑。</font></p>
+
+<br>
+<img src="{{site.url}}/img/18-01-12.10.png"/>
+<img src="{{site.url}}/img/18-01-12.11.png"/>
+</h4>
+<br>
+
+<h3>四.测试是否成功</h3>
+<h4>
+01.调出控制台,输入java空格-version,如图所示即代表配置成功啦
+<img src="{{site.url}}/img/18-01-12.12.png"/>
+</h4>
+<br>
+
+
+<h4>
+02.运行第一个程序
+<p>在桌面新建一个.java文件，输入下面内容</p>
+<img src="{{site.url}}/img/18-01-12.13.png"/>
+
+<p>使用CD命令进入桌面，并使用javac命令进行编译</p>
+<img src="{{site.url}}/img/18-01-12.14.png"/>
+
+<p>可以看到桌面出现一个.class文件</p>
+<img src="{{site.url}}/img/18-01-12.15.png"/>
+
+<p>然后使用Java命令运行，出现结果</p>
+<img src="{{site.url}}/img/18-01-12.16.png"/>
+
+</h4>
+
+<br>
+<br>
+<br>
+<h5>结语：以上就是JDK的安装和配置啦，接下来就可以安装集成开发环境了，下次再讲咯。</h5>
+
+<br>
+<br>
+<h5>以上</h5>
+
+
