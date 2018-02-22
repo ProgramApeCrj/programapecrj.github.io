@@ -1,0 +1,125 @@
+---
+layout: default_post
+title : Java的访问控制修饰符【下：修饰属性】（分类：Java基础）
+---
+
+
+<h5>前言：上次两篇博文写了修饰办法和修饰类，就缺修饰属性了。</h5>
+<br>
+<br>
+内容导航
+<ul>
+<li>1.需要知道的前提知识</li>
+<li>2.修饰符private</li>
+<li>3.修饰符protected</li>
+<li>4.修饰符public</li>
+<li>5.修饰符default</li>
+<li>6.总结</li>
+</ul>
+
+
+<br>
+
+<h3>1.需要知道的前提知识？</h3>
+<p>首先，当修饰符用来修饰一个属性时，我们一般从两个地方去讨论一个属性被修饰后的变化：</p>
+<p>---01.修饰后，该属性是否能够被类外部的实例对象访问。</p>
+<p>---02.修饰后，该属性是否能被它的继承者访问到。</p>
+
+<p>值得注意的是，属性不用讨论覆盖成功与否，
+如果子类重写了属性，但是没有重写办法，最终访问的还是父类的属性。任意修饰符都一样,下面以pubulic为例：</p>
+{% highlight ruby %}
+class Father { 
+    public String str = "father";
+    void print() {
+        System.out.println("父类办法调用str="+str);
+    }
+}
+
+class Son extends Father { 
+    public String str = "Son";
+    void print() {
+        System.out.println("Son子类办法调用str="+str); //子类调用自己的str
+     }
+}
+
+class Son2 extends Father {
+    public String str = "Son2";//子类不会覆盖父类的str，print()办法还是调用父类的str
+}
+
+public class Test {       
+    public static void main(String[] args) {
+        Father f = new Son();
+        f.print();
+        
+        Father f2 = new Son2();
+        f2.print();
+    }
+}
+
+{% endhighlight %}
+
+<p>输出结果：</p>
+<pre>
+Son子类办法调用str=Son
+父类办法调用str=father
+</pre>
+<br>
+
+<h3>2.修饰符private</h3>
+<p>对于private定义的属性:</p>
+<p>01.外部实例对象无法访问到</p>
+<p>02.子类无法访问</p>
+<br>
+<img width="100%" 
+src="http://p2pko6fd6.bkt.clouddn.com/18-02-22@01.png" />
+<br>
+
+<h3>3.修饰符protected</h3>
+<p>对于protected定义的属性:</p>
+<p>01.外部实例对象能够访问到(不同包不行)</p>
+<p>02.子类能够访问到(不同包可以)</p>
+<br>
+<img width="100%" 
+src="http://p2pko6fd6.bkt.clouddn.com/18-02-22@02.png" />
+<br>
+
+<h3>4.修饰符public</h3>
+<p>对于public定义的属性:</p>
+<p>01.外部实例对象能够访问到(不同包也可以)</p>
+<p>02.子类能够访问到(不同包也可以)</p>
+<br>
+<img width="100%" 
+src="http://p2pko6fd6.bkt.clouddn.com/18-02-22@03.png" />
+<br>
+
+<h3>5.修饰符default</h3>
+<p>对于default定义的属性:</p>
+<p>01.外部实例对象能够访问到(不同包不行)</p>
+<p>02.子类能够访问到(不同包不行)</p>
+<br>
+<img width="100%" 
+src="http://p2pko6fd6.bkt.clouddn.com/18-02-22@04.png" />
+<br>
+
+
+<h3>6.总结</h3>
+<p>看完推论看总结，依旧是两张图。</p>
+<p>01.类外部实例访问属性时：</p>
+<br>
+<img width="100%" 
+src="http://p2pko6fd6.bkt.clouddn.com/18-02-22@05.png" />
+
+<p>02.子类内部访问父类属性：</p>
+<img width="100%" 
+src="http://p2pko6fd6.bkt.clouddn.com/18-02-22@06.png" />
+
+<br>
+<br>
+<h5>结语：这样一来，Java的访问控制修饰符就清楚明白了，无论修饰类，办法，还是属性，都一目了然了。以后理解内部类的时候，
+再理解访问修饰符去修饰内部类，内部类属性，内部类办法的情况。顺带理解为什么需要定义不同权限，分别用于什么场景等等．．．</h5>
+
+<br>
+<br>
+<h5>以上</h5>
+
+
