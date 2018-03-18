@@ -1,0 +1,165 @@
+---
+layout: default_post
+title : 直接插入排序【中：代码实现】（分类：八大算法）
+---
+
+
+<h5>前言：读这篇博文前，需要读上一篇博文
+<a href="/2018/02/05/eight-algorithm-01.html"><<直接插入排序【上：图解理论】>></a>
+了解插入排序的理论知识，
+
+以及知道博文<a href="/2018/01/18/eight-algorithm-00.html"><<用Java学八大算法的前置条件>></a>
+中提到的工具类SortUtil。</h5>
+<br>
+<br>
+内容导航
+<ul>
+<li>0.一点解释</li>
+<li>1.结合理论写出代码</li>
+<li>2.整合代码</li>
+<li>3.打印+调试</li>
+<li>4.总结</li>
+</ul>
+
+
+<br>
+
+<h3>0.一点解释</h3>
+<p>
+虽然说是插入排序，但是代码实现的时候，
+其实是两个数字进行交换，而不是真正意义上的插入到中间。</p>
+
+<br>
+
+
+
+<h3>1.结合理论写出代码</h3>
+<p>01.插入排序中，一个数组a[ N ]中，会分为有序队伍和无序队伍，
+而无序队伍队伍中，第一个无序的元素(即迟到者)下标应该为1，
+下标从1开始，到最后一个人，所以范围是1至长度-1。
+对应代码为：</p>
+<pre>
+int N = a.length;  
+for(int i = 1; i <= N-1; i++) 
+
+// i 就是每次的迟到者
+</pre>
+<br>
+
+<p>
+02.在一趟排序中(军训故事)，迟到者一直往前走，直到遇到比自己小的(或者一样的，或者到达头部)停住。所以对应代码为：
+</p>
+<pre>
+for(int j = i; j > 0; j--) 
+
+// 　j = i　指定了某一趟排序中的迟到者，j > 0　表示未到头部，j--　代表迟到者的位置往前走
+</pre>
+<br>
+
+<p>03.迟到者只要发现自己比前面的小，都会和他交换位置，
+对应代码为：</p>
+<pre>
+　if (SortUtil.less( a[ j ]，a[ j-1 ] ) ) {  
+        SortUtil.exch(a, j, j-1);           
+　}	
+</pre>
+<br>
+
+
+<h3>2.整合代码</h3>
+
+<p>上面的代码写在一起，就变成了如下：</P>
+<pre>
+public static void sort(Comparable[] a) {
+        int N = a.length;  //要排序数组的大小
+        for(int i = 1; i <= N-1; i++){  //迟到者角色一直变化,下标从1~N-1
+
+            for(int j = i; j > 0; j--) { //每趟都是从迟到者 j 开始,每次只能前移动一位
+
+                if(SortUtil.less(a[j], a[j-1])) {  //迟到者 j 发现自己比前面 j-1 的小,交换
+                    SortUtil.exch(a, j, j-1);
+                }
+            }
+        }
+    }
+
+</pre>
+
+<h3>3.打印+调试</h3>
+<p>写个待排序的数组，然后打印每趟排序后的结果，代码：</P>
+<pre>
+public class DirectInsertionSort {
+    public static void sort(Comparable[] a) {
+        int N = a.length;  
+
+        for(int i = 1; i <= N-1; i++){  
+            for(int j = i; j > 0; j--) { 
+                if(SortUtil.less(a[j], a[j-1])) {  
+                    SortUtil.exch(a, j, j-1);
+                }
+            }
+
+            System.out.print("当i为"+i+"-->");
+            SortUtil.show(a);
+
+        }
+    }
+    
+    public static void main(String[] args) {
+        String a[] = {"e","f","d","z","b","c","e"};
+        System.out.println("原始数据为:");
+        SortUtil.show(a);
+        sort(a);
+        
+    }
+}
+</pre>
+<p>打印结果：</P>
+<pre>
+原始数据为:
+e f d z b c e 
+当i为1-->e f d z b c e 
+当i为2-->d e f z b c e 
+当i为3-->d e f z b c e 
+当i为4-->b d e f z c e 
+当i为5-->b c d e f z e 
+当i为6-->b c d e e f z 
+</pre>
+
+<p>至此，我们就知道怎么用代码实现直接插入排序了。
+但是这个算法有个小ＢＵＧ：每趟排序，j都会走到0。
+也就是说，即使迟到者因为不交换而停下了,
+j--还会继续走，前面那些本来有序的数还会再次比较。
+
+</p>
+
+<p>后面分析稳定性，时间、空间复杂度的时候再讲讲如何优化代码（只需要一点点小小改动）。
+
+</p>
+
+
+<h3>4.总结</h3>
+<p>最后，我们不需要记住代码，
+我们只需要记住：
+<ol>
+<li>两个for循环</li>
+<li>第一个for循环代表迟到者角色变化</li>
+<li>第一个迟到者下标为1</li>
+<li>最后一个迟到者下标为长度-1</li>
+
+<li>第二个for循环代表某个具体的迟到者的一趟插入成功的排序</li>
+
+<li>每一趟排序都是从迟到者开始,交换后,所在的位置会-1，
+然后继续,向前比较和交换,直到停止。</li>
+</ol>
+</p>
+
+<br><br>
+
+<h5>结语：后面还需要再分析一下代码实现，寻找更优的办法。</h5>
+
+<br>
+<br>
+<h5>以上</h5>
+
+

@@ -90,6 +90,40 @@ src="http://p2pko6fd6.bkt.clouddn.com/18-01-18.01.png" />
 {% endhighlight %}
 <br>
 
+<h4>将上面的内容放在一个SortUtil中</h4>
+<pre>
+public class SortUtil {
+    public static boolean less(Comparable v, Comparable w) {
+        return v.compareTo(w) < 0;
+    }
+    
+    public static void exch(Comparable[] a, int i, int j) {
+        Comparable t = a[i];
+        a[i] = a[j];
+        a[j] = t;
+    }
+                
+    public static void show(Comparable[] a) {
+        for(int i = 0 ;i< a.length;i++){
+            System.out.print(a[i]+" ");
+        }
+        System.out.println("");
+    }
+    
+    public static boolean isSorted(Comparable[] a) {
+        for(int i = 1 ;i< a.length;i++){
+         
+            if(less(a[i], a[i-1])) {
+                return false;
+            }
+            
+        }
+        return true;
+    }
+}
+</pre>
+<br>
+
 <h5>结语：这些就是使用Java语言学习八大算法的基本要求了，磨刀不误砍柴工嘛，先理解上面的内容，接下来学习算法也能更加容易。</h5>
 
 <br>
