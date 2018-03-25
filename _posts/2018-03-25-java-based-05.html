@@ -1,0 +1,222 @@
+---
+layout: default_post
+title : 类的初始化顺序（分类：Java基础）
+---
+
+
+<h5>前言：今天想捋一捋类的初始化顺序</h5>
+<br>
+<br>
+内容导航
+<ul>
+<li>1.一个类的划分</li>
+<li>2.一个类的初始化顺序</li>
+<li>3.子类继承父类后的初始化顺序</li>
+<li>4.总结</li>
+<li>5.待理解的</li>
+</ul>
+
+
+<br>
+
+<h3>1.一个类的划分</h3>
+<p>静态全局变量：</p>
+{% highlight ruby %}
+public static String fatherStaticVar = "fatherStaticVar";
+{% endhighlight %}
+
+<p>普通全局变量：</p>
+{% highlight ruby %}
+public String fatherVar = "fatherVar";
+{% endhighlight %}
+
+<p>静态初始化块（里面声明的变量为局部变量）：</p>
+{% highlight ruby %}
+ static {
+        System.out.println("静态初始化块");
+  }
+{% endhighlight %}
+
+<p>普通初始化块（里面声明的变量为局部变量）：</p>
+{% highlight ruby %}
+{
+        System.out.println("普通初始化块");
+ }
+{% endhighlight %}
+
+<p>构造器：</p>
+{% highlight ruby %}
+ Father(){
+}
+{% endhighlight %}
+
+<p>main方法：</p>
+{% highlight ruby %}
+public static void main(String[] args) {
+
+}
+{% endhighlight %}
+
+<p>其他：内部类、静态办法、普通办法先不讨论。</p>
+
+<h3>2.一个类的初始化顺序</h3>
+<p>我们写一个名为Father的类来验证一下顺序：</p>
+{% highlight ruby %}
+public class Father {
+    
+    public static String fatherStaticVar = "fatherStaticVar";
+    public String fatherVar = "fatherVar";
+    
+    {
+        System.out.print("初始化块--");
+        System.out.println("调用普通全局变量:"+fatherVar);
+    }
+    
+    static {
+        System.out.print("静态初始化块--");
+        System.out.println("调用静态全局变量:"+fatherStaticVar);  
+    }
+   
+    
+    Father(){
+        System.out.print("构造函数--");
+        System.out.println("调用普通全局变量:"+fatherVar); 
+    }
+    
+    public static void main(String[] args) {
+        
+        System.out.println("main办法执行");
+        new Father();
+        System.out.println("main办法执行结束");
+    }
+    
+}
+{% endhighlight %}
+
+<p>输出结果：</p>
+<pre>
+静态初始化块--调用静态全局变量:fatherStaticVar
+main办法执行
+初始化块--调用普通全局变量:fatherVar
+构造函数--调用普通全局变量:fatherVar
+main办法执行结束
+</pre>
+<p>由上，我们可以知道一个类执行顺序如下：</p>
+<ol>
+　<li>静态全局变量</li>
+  <li>静态初始化块</li>
+  <li>main办法</li>
+  <li>普通全局变量</li>
+  <li>初始化块</li>
+  <li>构造函数</li>
+</ol>
+
+<h3>3.子类继承父类后的初始化顺序　</h3>
+<p>在上面代码的基础上，我们写一个Son类来继承它：</p>
+{% highlight ruby %}
+public class Father {
+    
+    public static String fatherStaticVar = "fatherStaticVar";
+    public String fatherVar = "fatherVar";
+    
+    {
+        System.out.print("父类初始化块--");
+        System.out.println("调用父类普通全局变量:"+fatherVar);
+    }
+    
+    
+    static {
+        System.out.print("父类静态初始化块--");
+        System.out.println("调用父类静态全局变量:"+fatherStaticVar);  
+    }
+    
+    Father(){
+        System.out.print("父类构造函数--");
+        System.out.println("调用父类普通全局变量:"+fatherVar); 
+    }    
+    
+}
+
+
+class Son extends Father {
+
+    public static String SonStaticVar = "SonStaticVar";
+    public String SonVar = "SonVar";
+    
+    {
+        System.out.print("子类初始化块--");
+        System.out.println("调用子类普通全局变量:"+SonVar);
+    }
+    
+    
+    static {
+        System.out.print("子类静态初始化块--");
+        System.out.println("调用子类静态全局变量:"+SonStaticVar);  
+    }
+    
+    Son(){
+        System.out.print("子类构造函数--");
+        System.out.println("调用子类普通全局变量:"+SonVar); 
+    }    
+    
+ 
+  public static void main(String[] args) {
+        
+        System.out.println("main办法执行");
+        new Son();
+        System.out.println("main办法执行结束");
+    }
+}
+
+{% endhighlight %}
+
+<p>输出结果：</p>
+<pre>
+父类静态初始化块--调用父类静态全局变量:fatherStaticVar
+子类静态初始化块--调用子类静态全局变量:SonStaticVar
+main办法执行
+父类初始化块--调用父类普通全局变量:fatherVar
+父类构造函数--调用父类普通全局变量:fatherVar
+子类初始化块--调用子类普通全局变量:SonVar
+子类构造函数--调用子类普通全局变量:SonVar
+main办法执行结束
+</pre>
+
+<p>由上，我们可以知道子父类执行顺序如下：</p>
+<ol>
+<li>父类--静态全局变量</li>
+<li>父类--静态初始化块</li>
+<li>子类--静态全局变量</li>
+<li>子类--静态初始化块</li>
+<li>main方法</li>
+<li>父类--全局变量</li>                                                       
+<li>父类--初始化块 </li>
+<li>父类--构造器</li>
+<li>子类--全局变量</li>
+<li>子类--初始化块</li>
+<li>子类--构造器</li>
+</ol>
+
+
+
+<h3>4.总结</h3>
+<p>静态的变量和代码块总是在类加载到内存中（不需要new）就有了，所以在main办法前。子类创建对象前必须创建父类对象，所以父类的构建总会在子类之前。至于为什么是这样的，那就是jvm的内容了，以后肯定会再理解的。</p>
+
+<h3>5.待理解的</h3>
+<p>遗留了几个问题，还没研究透，等理解了再补上：</p>
+<ol>
+<li>静态办法和普通办法的初始化顺序呢？</li>
+<li>静态方法、静态属性、非静态属性都没有多态，只有非静态方法有多态，如何理解？</li>
+</ol>
+
+
+
+<br>
+<br>
+<h5>结语：简单的了解了一下类的构造顺序，也引出了不少问题，以后的学习中再进一步思考吧！</h5>
+
+<br>
+<br>
+<h5>以上</h5>
+
+
