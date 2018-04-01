@@ -1,0 +1,171 @@
+---
+layout: default_post
+title : Java书写格式规范（分类：编程规范）
+---
+
+
+<h5>前言：写出优雅代码的第一步，就是格式要优雅（清晰），今天我想将不同地方看到的，一些写的比较好的和公认好的格式，总结记录下来。</h5>
+<br>
+<br>
+内容导航
+<ul>
+<li>1.包的声明和导入的书写</li>
+<li>2.关键字的顺序</li>
+<li>3.空格的使用</li>
+<li>4.代码需要换行的时候</li>
+<li>5.总结</li>
+</ul>
+
+
+<br>
+
+<h3>1.包的声明和导入的书写</h3>
+<p>很多时候，包的声明和导入，开发工具（如eclipse），会帮我们自动生成，但是他的书写也是有规律的：</p>
+<ol>
+　<li>package 包名</li>
+  <li>Java标准类(java.*)  </li>
+  <li>Java扩充类(javax.*) </li>
+  <li>第三方类</li>
+  <li>你自己的应用程序的类</li>
+</ol>
+
+<p>举个例子(不同类型的声明用空行隔开,可以给导入类写注释):</p>
+<pre>
+package test
+
+import java.util.Date;
+import java.util.Enumeration;
+
+import javax.sql.*;
+
+//Apache Xerces
+import org.apache.xml.*;
+
+import  mytest.test;
+
+</pre>
+
+<h3>2.关键字的顺序(一般是强制性的)：</h3>
+
+<ul>对于一个类的定义来说:<ul/>
+<ol>
+　<li>访问控制修饰符</li>
+  <li>final或abstract (两者不能共存) </li>
+  <li>class+类名</li>
+  <li>extends+继承的类名</li>
+  <li>implements+实现的接口</li>
+ 
+</ol>
+<ul>举个例子：</ul>
+
+<pre>
+public abstract class xx extends xx implements xx
+</pre>
+
+<ul>对于一个办法的定义来说:<ul/>
+<ol>
+　<li>访问控制修饰符</li>
+  <li>static final或final static</li>
+  <li>abstract(与static final或final static不能共存)</li>
+  <li>办法返回类型+办法名+括号中的变量</li>
+  <li>抛出的错误</li>
+ 
+</ol>
+<ul>举个例子：</ul>
+
+<pre>
+public static final String xx() throws xx {
+        
+}
+</pre>
+
+<ul>对于一个变量的定义来说:<ul/>
+<ol>
+　<li>访问控制修饰符</li>
+  <li>static final或final static</li>
+  <li>属性类型</li>
+  <li>属性名称</li>
+</ol>
+<ul>举个例子：</ul>
+
+<pre>
+public final static String a = " ";
+</pre>
+
+
+
+<h3>3.空格的使用</h3>
+<p>合理使用空格，能使得代码变得清晰明朗。而空格的使用规范，谁最有话语权？当然是Java自己啦，
+我们来看一下Java源码的空格缩进使用情况。
+<p>首先，随便打开份Java源码,然后点开eclipse的<img width="70%"
+src="http://p2pko6fd6.bkt.clouddn.com/18-04-01@01.png" /></p>
+
+
+<p>然后我们可以看到：</p>
+<img width="100%"
+src="http://p2pko6fd6.bkt.clouddn.com/18-04-01@02.png" />
+
+<img width="10%"
+src="http://p2pko6fd6.bkt.clouddn.com/18-04-01@03.png" />
+代表四个空格,一个点代表一个，
+
+<img width="10%"
+src="http://p2pko6fd6.bkt.clouddn.com/18-04-01@04.png" />
+代表换行。
+
+从上面我们可以发现:
+<p>&nbsp</p>
+<ol>
+<li>每一级，相对上级的缩进为4个空格(tab键可以设置为4个空格)</li>
+<li>办法参数中：逗号＋空格隔开参数</li>
+<li>ｆｏｒ循环中：分号＋空格隔开参数</li>
+<li>左大括号前都有一个空格</li>
+<li>ｉｆ和ｅｌｓｅ ｉｆ与大小括号之间总是有空格</li>
+<li>运算符两侧都有空格（无论是逻辑运算符还是加减乘除）</li>
+<li>其他：参照一下就知道啦</li>
+</ol>
+
+
+
+
+<h3>4.代码需要换行的时候</h3>
+<p>很多时候写代码，一行都写完了，代码还是很长很长，需要换行继续写。但是如果换的不好，会显得很难理解。这里说说几种情况和解决办法：</p>
+
+<p>01.办法中的变量太长时，我一般会这样写：</p>
+<img width="70%"
+src="http://p2pko6fd6.bkt.clouddn.com/18-04-01@05.png" />
+<p>&nbsp</p>
+
+<p>02.某个字符串太长时，
+在eclipse中，将光标移动到字符串中间，按下回车，eclipse自动帮你换行对齐。
+我们可以看出，相对上一行为8个空格缩进：</p>
+<img width="100%"
+src="http://p2pko6fd6.bkt.clouddn.com/18-04-01@06.png" />
+<p>&nbsp</p>
+
+<p>03.调用办法时候，代码太长，
+可以参照阿里Java规范第(三)节的第七条：</p>
+<img width="100%"
+src="http://p2pko6fd6.bkt.clouddn.com/18-04-01@07.png" />
+<p>&nbsp</p>
+
+<p>04.逻辑判断时，条件太多，<<代码大全>>750页提供了一种建议：</p>
+<img width="100%"
+src="http://p2pko6fd6.bkt.clouddn.com/18-04-01@08.jpg" />
+<p>但是里面的空格缩进与Java源码或阿里手册规范有些不一致，
+所以建议将逻辑条件封装成办法，直接调用办法。</p>
+
+
+<h3>5.总结</h3>
+<p>其实现在，eclipse总是会帮我们自动去格式化代码，网上也有很多工具，阿里Java规范也出了ide插件，所以我们在不知不觉就已经在遵守着这些规范了。但是，代码格式规范了，仅仅是第一步，为了让别人更好理解你的代码，必要的注释，良好的命名规范，也是一样重要的。</p>
+
+
+<br>
+<br>
+<h5>结语：下次再讲讲命名规范咯！</h5>
+
+<br>
+<br>
+<h5>以上</h5>
+
+
