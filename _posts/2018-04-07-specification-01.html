@@ -34,7 +34,8 @@ title : Java编码问题（分类：编程规范）
 <p>它表示，如果老师在你头上敲三下，代表你该醒醒听课了。</p>
 
 <p>假设你的默认编码是"人BK"，菩提老祖以为你是 "猴tf-8"，</p>
-<p>敲了你三下，你解析成"该醒醒听课了"。那你就错过了学会七十二变的本事。</p>
+<p>敲了你三下(编码)，你解析(解码)成"该醒醒听课了"。</p>
+<p>那你就错过了学会七十二变的本事。</p>
 
 <p>假如孙悟空的默认编码是 "猴tf-8"，老师以为他是"人BK" ，</p>
 <p>敲了他三下头，然后他因为半夜三更入室抢劫被抓....</p>
@@ -79,8 +80,8 @@ title : Java编码问题（分类：编程规范）
 <p>即使改了编码，只会更乱，而不是恢复正常，这是为什么呢？这是因为有些编码信息已经丢失，不可能完全还原的，这就是文件本身的编码。</p>
 
 
-<h3>4.java文件的编码</h3>
-<p>看了上面的内容，你可能要问，你明明说jvm是用unicode格式存储字符和字符串，那为什么我System.out.println(“哈哈”);输出的是中文，你是不是坑我?</p>
+<h3>4.Java文件的编码</h3>
+<p>Java文件的编码又有什么作用呢?</p>
 <p>我们来做个试验：</p>
 <p>修改一个.java文件的编码为utf-8。</p>
 <img width="100%"
@@ -88,41 +89,41 @@ src="http://p2pko6fd6.bkt.clouddn.com/18-04-07@00.png" />
 
 <p>然后加入下面的代码：<p>
 <pre>
-        String str = new String("哈哈");
+       	String str;
         
-        System.out.println("我是默认的字符串:"+str);
+        str = new String("你好");
+        str = new String(str);
+        System.out.println("默认编码,默认解码:"+str);
         
-        str = new String(str.getBytes(),"utf-8");
+        str = new String("你好");
+        str = new String(str.getBytes("utf-8"),"utf-8");   
+        System.out.println("和页面一样的编码,和页面一样的解码:"+str);
         
-        System.out.println("我是utf-8编码的字符串:"+str);
-        
+        str = new String("你好");
         str = new String(str.getBytes(),"gbk");
-        
-        System.out.println("我是gbk编码后的字符串:"+str);
+        System.out.println("编码默认,解码为gbk:"+str);
+  
+        str = new String("你好");
+        str = new String(str.getBytes("gbk"));   
+        System.out.println("编码改为gbk,解码默认:"+str);
 </pre>
-<p>输出结果:<p>
+<p>输出结果:</p>
 <pre>
-我是默认的字符串:哈哈
-我是utf-8编码的字符串:哈哈
-我是gbk编码后的字符串:鍝堝搱
+默认编码,默认解码:你好
+和页面一样的编码,和页面一样的解码:你好
+编码默认,解码为gbk:浣犲ソ
+编码改为gbk,解码默认:���
 </pre>
 
-<p>可以看出，默认和utf-8编码的字符串没有乱码，gbk编码的却乱了。</p>
-<p>为什么呢？</p>
-<p>实际上，String str = new String("哈哈");</p>
-<p>等同于</p>
-<p>String  str = new String( "哈哈".getBytes(),"你java页面的编码");</p>
+<p>可以看出,在java文件编码为utf-8的时候：</p>
+  <p>str = new String(str);</p>
+<p>其实是等同于</p>
+  <p>str = new String(str.getBytes("utf-8"),"utf-8");   </p>
+<p>也就是我们创建新的字符串的时候，会使用java页面的默认编码去编码和解码。</p>
 
-<p>此时字符串已经是utf-8编码了。</p>
-<p>这时候你再写</p>
-<p>str = new String(str.getBytes(),"gbk");</p>
+<p>还可以看到，如果编码和解码设置不同，就会出现乱码。</p>
 
-<p>实际上就是用gbk的编码规则去解析utf-8的"哈哈"，所以出现乱码。</p>
 
-<p>从上面我们可以知道：</p>
-<p>虽然存储的时候是unicode格式，但是默认情况下，</p>
-<p>我们创建字符串时，会按照Java文件的编码来生成字符串，且规定我们解析字符串时的编码。使用字符串时，根据该编码规则去解析。如果创建的时候是utf-8,后面却指定了gbk去解析，当然乱码。</p>
-<p>（注：String字符串可以按一定编码拆分成byte数组,byte数组个可以按一定编码组合成字符串。）</p>
 
 
 <h3>5.jsp文件的编码</h3>
@@ -139,7 +140,7 @@ src="http://p2pko6fd6.bkt.clouddn.com/18-04-07@00.png" />
 <p>那么这个编码又是干嘛用的呢？</p>
 
 <p>pageEncoding="UTF-8"的作用是设置JSP编译成Servlet时使用的编码，</p>
-<p>设置时要和jsp文件(像上面的java文件)编码保证一致。</p>
+<p>设置时要和jsp文件（像上面的Java文件）编码保证一致。</p>
 
 <p>例如，你的jsp文件是以GBK为编码保存的，而在jsp中却指定：</p><p>pageEncoding="UTF-8"，
 就会用GBK的规则去解析UTF-8，</p>
@@ -172,10 +173,10 @@ src="http://p2pko6fd6.bkt.clouddn.com/18-04-07@00.png" />
 
 
 
-<h3>8.遗留问题</h3>
+<h3>8.遗留问题（下次解决）</h3>
 <ol>
 <li>上面说过文件的编码转换时，会遇到数据丢失的问题，搞清楚为什么？</li>
-<li>Java底层转换和处理编码的具体细节。</li>
+<li>Java底层（unicode）转换和处理编码的具体细节。</li>
 <li>数据库的编码问题，做了几个实验，但是还没得出结论．．</li>
 <li>读取xml时候遇到的乱码问题，这个忘记什么时候遇到过，下次遇到再总结。</li>
 <li>其他场景下，统一编码的各种办法，还需要不断学习和实践。</li>
