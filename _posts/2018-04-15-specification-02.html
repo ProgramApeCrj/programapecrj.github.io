@@ -1,0 +1,145 @@
+---
+layout: default_post
+title : Java路径问题（分类：编程规范）
+---
+
+
+<h5>前言：项目在编程阶段和发布阶段，目录情况是不同的。</h5>
+<br>
+<br>
+内容导航
+<ul>
+<li>0.普通的Java项目</li>
+<li>1.web项目--获取文件路径</li>
+<li>2.web项目--获取URL路径</li>
+<li>3.总结</li>
+</ul>
+
+
+<br>
+
+<h3>0.普通的Java项目</h3>
+<p>开发普通的Java项目时，我们可能会遇到以下场景需要用到路径：</p>
+<ol>
+<li>读取配置文件</li>
+<li>读取项目中的图片</li>
+<li>使用项目中的exe</li>
+</ol>
+<p>那么如何获取项目所在的动态路径呢：</p>
+
+<p>01.getCanonicalPath()函数：</p>
+<pre>
+//对于getCanonicalPath()函数，“."就表示当前的文件夹，而”..“则表示当前文件夹的上一级文件夹 
+System.out.println(new File("..").getCanonicalPath()); 
+</pre>
+
+<p>02.getAbsolutePath()函数：</p>
+<pre>
+//与getCanonicalPath()函数不同的是，不能使用“."和”..“去获取当前和上一级文件夹
+System.out.println(new File("").getAbsolutePath());
+</pre>
+
+<p>但是问题来了，输出上面的语句我们可以知道，上面得到路径的根目录仅仅是项目名称，不同时期的项目，项目的Java文件的根目录是不同的：</p>
+<ol>
+<li>编程时，根目录是：项目名/src下</li>
+<li>编译后，根目录是：项目名/bin下</li>
+<li>打包成JAR包，根目录是：项目名</li>
+</ol>
+
+<p>情况这么多变，不可能每次都改吧？下面说一下如何进一步解决：</p>
+<pre>
+//第一个办法
+System.out.println(Class.class.getClass().getResource("/").getPath());
+//第二个办法
+System.out.println(Thread.currentThread().getContextClassLoader().getResource("").getPath());
+</pre>
+<p>你可以试着输出看看，这样解决了。（具体why还在研究中，spring的classpath:好像就是用第一个办法来读的）</p>
+
+
+
+<h3>1.web项目--获取文件路径</h3>
+
+<p>开发Java的web项目时，我们可能会遇到以下场景需要用到路径：</p>
+<ol>
+<li>读取配置文件</li>
+<li>存储上传的图片</li>
+<li>如何保证打包成war包前后，路径可以自动获取？</li>
+</ol>
+<p>那么如何获取项目所在的动态路径呢：</p>
+<p>01.如果是在Java类中获取，那么和上面一样：</p>
+<pre>
+//第一个办法
+System.out.println(Class.class.getClass().getResource("/").getPath());
+//第二个办法
+System.out.println(Thread.currentThread().getContextClassLoader().getResource("").getPath());
+</pre>	
+
+<p>02.如果是在Servlet中获取，那么要借助ServletContext：</p>
+<pre>
+request.getSession().getServletContext().getRealPath(“”);
+</pre>	
+
+<p>但是Servlet中获取的只是项目名称的根目录，web项目的情况比较复杂，
+所以可以单独抽象一个xml出来放这些配置的路径，这样有利于更改。</p>
+
+<h3>2.web项目--获取URL路径</h3>
+<p>我们访问一个相对路径的URL时，
+一般都是相对于当前的URL去跳转，
+
+但是实际上我们需要的是相对于网站的根URL去跳转，
+那么要怎么写才能保证每次跳转都是正确的？分为４步走：</p>
+
+<p>01.获取网站的根URL</p>
+<pre> 
+String path = request.getContextPath(); 
+String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/"; 
+
+</pre>
+
+<p>02.将 "项目路径basePath" 放入pageContext中</p>
+<pre>
+pageContext.setAttribute("basePath",basePath);
+</pre>
+
+<p>03.在HTML中直接用EL表达式获取根URL，然后＋上要跳转的URL</p>
+<pre>
+<xmp>
+<html> 
+<head> </head> 
+<body> 
+<a href="${pageScope.basePath}register.jsp"> 注册</a> 
+</body> 
+</html> 
+</xmp>
+</pre>
+<p>04.如果还觉得写${pageScope.basePath}麻烦，
+可以利用HTML的base标签：</p>
+<pre><xmp>
+<html> 
+<head> 
+<!-- base需要放到head中 --> 
+<base href="${pageScope.basePath}"> 
+</head> 
+
+// 这里我们就可以直接使用
+<a href="register.jsp">注册</a> 
+</html> 
+</xmp></pre>
+
+
+
+<h3>3.总结</h3>
+<p>以上就是三种情景下获取相对路径的办法了，这样无论项目如何迁移，都不需要考虑路径问题，如果遇到复杂点的情况，也可以抽象成xml配置。</p>
+
+
+
+
+
+<br>
+<h5>结语：瞬间明朗了一点．．．．</h5>
+
+<br>
+<br>
+<h5>以上</h5>
+
+
