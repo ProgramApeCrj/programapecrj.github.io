@@ -53,7 +53,7 @@ System.out.println(Class.class.getClass().getResource("/").getPath());
 //第二个办法
 System.out.println(Thread.currentThread().getContextClassLoader().getResource("").getPath());
 </pre>
-<p>你可以试着输出看看，这样解决了。（具体why还在研究中，spring的classpath:好像就是用第一个办法来读的）</p>
+<p>你可以试着输出看看，这样解决了。（具体why还在研究ing...）</p>
 
 
 
@@ -66,11 +66,8 @@ System.out.println(Thread.currentThread().getContextClassLoader().getResource(""
 <li>如何保证打包成war包前后，路径可以自动获取？</li>
 </ol>
 <p>那么如何获取项目所在的动态路径呢：</p>
-<p>01.如果是在Java类中获取，那么和上面一样：</p>
+<p>01.如果是在Java类中获取，那么用上面的办法：</p>
 <pre>
-//第一个办法
-System.out.println(Class.class.getClass().getResource("/").getPath());
-//第二个办法
 System.out.println(Thread.currentThread().getContextClassLoader().getResource("").getPath());
 </pre>	
 
