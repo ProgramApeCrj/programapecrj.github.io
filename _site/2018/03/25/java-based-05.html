@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="keywords" content="crj">
+		<meta name="description" content="crj。">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>类的初始化顺序（分类：Java基础）</title>
+		<link rel="icon" href="/img/favicon.ico" type="image/x-icon"/>
+		<link rel="shortcut icon" href="/img/favicon.ico" type="image/x-icon"/>
+		<link href="/css/layout.css" rel="stylesheet" media="screen">
+		<!-- <link href="/css/pygment_trac.css" rel="stylesheet" media="screen">-->
+　　 </head>
+　　 <body>
+		<div id="container">
+	       <div class="inner">
+				<!-- 引用头部代码部分 -->
+				<header>
+	<h1>ProgramApeCrj 's Blog</h1>
+    <h2><a href="http://programapecrj.github.io" target="_blank" class="header_jekyll">--  a small notebook</a></h2>
+    <div id="downloads" class="clearfix">
+		<a href="https://github.com/ProgramApeCrj/programapecrj.github.io/" id="view-on-github" target="_blank" class="button"><span>View on GitHub</span></a>
+	</div>
+</header>
+
+
+
+				
+				<!-- 内容部分 -->
+				<div class="content">
+
+					<h1>类的初始化顺序（分类：Java基础）</h1>
+					<p class="copyright">（微信[a997247716] 版权所有-陈润基,转载请注明来处）</p>
+					<section class="downloads clearfix back_to_index">
+						<a href="http://localhost:4000/index.html" id="back-to-index" class="button"><span>&lt;&lt; Back</span></a>
+					</section>
+					<h5>前言：今天想捋一捋类的初始化顺序</h5>
+<br>
+<br>
+内容导航
+<ul>
+<li>1.一个类的划分</li>
+<li>2.一个类的初始化顺序</li>
+<li>3.子类继承父类后的初始化顺序</li>
+<li>4.总结</li>
+<li>5.待理解的</li>
+</ul>
+
+
+<br>
+
+<h3>1.一个类的划分</h3>
+<p>静态全局变量：</p>
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="kp">public</span> <span class="n">static</span> <span class="no">String</span> <span class="n">fatherStaticVar</span> <span class="o">=</span> <span class="s2">"fatherStaticVar"</span><span class="p">;</span></code></pre></figure>
+
+<p>普通全局变量：</p>
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="kp">public</span> <span class="no">String</span> <span class="n">fatherVar</span> <span class="o">=</span> <span class="s2">"fatherVar"</span><span class="p">;</span></code></pre></figure>
+
+<p>静态初始化块（里面声明的变量为局部变量）：</p>
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"> <span class="n">static</span> <span class="p">{</span>
+        <span class="no">System</span><span class="p">.</span><span class="nf">out</span><span class="p">.</span><span class="nf">println</span><span class="p">(</span><span class="s2">"静态初始化块"</span><span class="p">);</span>
+  <span class="p">}</span></code></pre></figure>
+
+<p>普通初始化块（里面声明的变量为局部变量）：</p>
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="p">{</span>
+        <span class="no">System</span><span class="p">.</span><span class="nf">out</span><span class="p">.</span><span class="nf">println</span><span class="p">(</span><span class="s2">"普通初始化块"</span><span class="p">);</span>
+ <span class="p">}</span></code></pre></figure>
+
+<p>构造器：</p>
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"> <span class="no">Father</span><span class="p">(){</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>main方法：</p>
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="kp">public</span> <span class="n">static</span> <span class="n">void</span> <span class="n">main</span><span class="p">(</span><span class="no">String</span><span class="p">[]</span> <span class="n">args</span><span class="p">)</span> <span class="p">{</span>
+
+<span class="p">}</span></code></pre></figure>
+
+<p>其他：内部类、静态办法、普通办法先不讨论。</p>
+
+<h3>2.一个类的初始化顺序</h3>
+<p>我们写一个名为Father的类来验证一下顺序：</p>
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="kp">public</span> <span class="k">class</span> <span class="nc">Father</span> <span class="p">{</span>
+    
+    <span class="kp">public</span> <span class="n">static</span> <span class="no">String</span> <span class="n">fatherStaticVar</span> <span class="o">=</span> <span class="s2">"fatherStaticVar"</span><span class="p">;</span>
+    <span class="kp">public</span> <span class="no">String</span> <span class="n">fatherVar</span> <span class="o">=</span> <span class="s2">"fatherVar"</span><span class="p">;</span>
+    
+    <span class="p">{</span>
+        <span class="no">System</span><span class="p">.</span><span class="nf">out</span><span class="p">.</span><span class="nf">print</span><span class="p">(</span><span class="s2">"初始化块--"</span><span class="p">);</span>
+        <span class="no">System</span><span class="p">.</span><span class="nf">out</span><span class="p">.</span><span class="nf">println</span><span class="p">(</span><span class="s2">"调用普通全局变量:"</span><span class="o">+</span><span class="n">fatherVar</span><span class="p">);</span>
+    <span class="p">}</span>
+    
+    <span class="n">static</span> <span class="p">{</span>
+        <span class="no">System</span><span class="p">.</span><span class="nf">out</span><span class="p">.</span><span class="nf">print</span><span class="p">(</span><span class="s2">"静态初始化块--"</span><span class="p">);</span>
+        <span class="no">System</span><span class="p">.</span><span class="nf">out</span><span class="p">.</span><span class="nf">println</span><span class="p">(</span><span class="s2">"调用静态全局变量:"</span><span class="o">+</span><span class="n">fatherStaticVar</span><span class="p">);</span>  
+    <span class="p">}</span>
+   
+    
+    <span class="no">Father</span><span class="p">(){</span>
+        <span class="no">System</span><span class="p">.</span><span class="nf">out</span><span class="p">.</span><span class="nf">print</span><span class="p">(</span><span class="s2">"构造函数--"</span><span class="p">);</span>
+        <span class="no">System</span><span class="p">.</span><span class="nf">out</span><span class="p">.</span><span class="nf">println</span><span class="p">(</span><span class="s2">"调用普通全局变量:"</span><span class="o">+</span><span class="n">fatherVar</span><span class="p">);</span> 
+    <span class="p">}</span>
+    
+    <span class="kp">public</span> <span class="n">static</span> <span class="n">void</span> <span class="n">main</span><span class="p">(</span><span class="no">String</span><span class="p">[]</span> <span class="n">args</span><span class="p">)</span> <span class="p">{</span>
+        
+        <span class="no">System</span><span class="p">.</span><span class="nf">out</span><span class="p">.</span><span class="nf">println</span><span class="p">(</span><span class="s2">"main办法执行"</span><span class="p">);</span>
+        <span class="n">new</span> <span class="no">Father</span><span class="p">();</span>
+        <span class="no">System</span><span class="p">.</span><span class="nf">out</span><span class="p">.</span><span class="nf">println</span><span class="p">(</span><span class="s2">"main办法执行结束"</span><span class="p">);</span>
+    <span class="p">}</span>
+    
+<span class="p">}</span></code></pre></figure>
+
+<p>输出结果：</p>
+<pre>
+静态初始化块--调用静态全局变量:fatherStaticVar
+main办法执行
+初始化块--调用普通全局变量:fatherVar
+构造函数--调用普通全局变量:fatherVar
+main办法执行结束
+</pre>
+<p>由上，我们可以知道一个类执行顺序如下：</p>
+<ol>
+　<li>静态全局变量</li>
+  <li>静态初始化块</li>
+  <li>main办法</li>
+  <li>普通全局变量</li>
+  <li>初始化块</li>
+  <li>构造函数</li>
+</ol>
+
+<h3>3.子类继承父类后的初始化顺序　</h3>
+<p>在上面代码的基础上，我们写一个Son类来继承它：</p>
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="kp">public</span> <span class="k">class</span> <span class="nc">Father</span> <span class="p">{</span>
+    
+    <span class="kp">public</span> <span class="n">static</span> <span class="no">String</span> <span class="n">fatherStaticVar</span> <span class="o">=</span> <span class="s2">"fatherStaticVar"</span><span class="p">;</span>
+    <span class="kp">public</span> <span class="no">String</span> <span class="n">fatherVar</span> <span class="o">=</span> <span class="s2">"fatherVar"</span><span class="p">;</span>
+    
+    <span class="p">{</span>
+        <span class="no">System</span><span class="p">.</span><span class="nf">out</span><span class="p">.</span><span class="nf">print</span><span class="p">(</span><span class="s2">"父类初始化块--"</span><span class="p">);</span>
+        <span class="no">System</span><span class="p">.</span><span class="nf">out</span><span class="p">.</span><span class="nf">println</span><span class="p">(</span><span class="s2">"调用父类普通全局变量:"</span><span class="o">+</span><span class="n">fatherVar</span><span class="p">);</span>
+    <span class="p">}</span>
+    
+    
+    <span class="n">static</span> <span class="p">{</span>
+        <span class="no">System</span><span class="p">.</span><span class="nf">out</span><span class="p">.</span><span class="nf">print</span><span class="p">(</span><span class="s2">"父类静态初始化块--"</span><span class="p">);</span>
+        <span class="no">System</span><span class="p">.</span><span class="nf">out</span><span class="p">.</span><span class="nf">println</span><span class="p">(</span><span class="s2">"调用父类静态全局变量:"</span><span class="o">+</span><span class="n">fatherStaticVar</span><span class="p">);</span>  
+    <span class="p">}</span>
+    
+    <span class="no">Father</span><span class="p">(){</span>
+        <span class="no">System</span><span class="p">.</span><span class="nf">out</span><span class="p">.</span><span class="nf">print</span><span class="p">(</span><span class="s2">"父类构造函数--"</span><span class="p">);</span>
+        <span class="no">System</span><span class="p">.</span><span class="nf">out</span><span class="p">.</span><span class="nf">println</span><span class="p">(</span><span class="s2">"调用父类普通全局变量:"</span><span class="o">+</span><span class="n">fatherVar</span><span class="p">);</span> 
+    <span class="p">}</span>    
+    
+<span class="p">}</span>
+
+
+<span class="k">class</span> <span class="nc">Son</span> <span class="n">extends</span> <span class="no">Father</span> <span class="p">{</span>
+
+    <span class="kp">public</span> <span class="n">static</span> <span class="no">String</span> <span class="no">SonStaticVar</span> <span class="o">=</span> <span class="s2">"SonStaticVar"</span><span class="p">;</span>
+    <span class="kp">public</span> <span class="no">String</span> <span class="no">SonVar</span> <span class="o">=</span> <span class="s2">"SonVar"</span><span class="p">;</span>
+    
+    <span class="p">{</span>
+        <span class="no">System</span><span class="p">.</span><span class="nf">out</span><span class="p">.</span><span class="nf">print</span><span class="p">(</span><span class="s2">"子类初始化块--"</span><span class="p">);</span>
+        <span class="no">System</span><span class="p">.</span><span class="nf">out</span><span class="p">.</span><span class="nf">println</span><span class="p">(</span><span class="s2">"调用子类普通全局变量:"</span><span class="o">+</span><span class="no">SonVar</span><span class="p">);</span>
+    <span class="p">}</span>
+    
+    
+    <span class="n">static</span> <span class="p">{</span>
+        <span class="no">System</span><span class="p">.</span><span class="nf">out</span><span class="p">.</span><span class="nf">print</span><span class="p">(</span><span class="s2">"子类静态初始化块--"</span><span class="p">);</span>
+        <span class="no">System</span><span class="p">.</span><span class="nf">out</span><span class="p">.</span><span class="nf">println</span><span class="p">(</span><span class="s2">"调用子类静态全局变量:"</span><span class="o">+</span><span class="no">SonStaticVar</span><span class="p">);</span>  
+    <span class="p">}</span>
+    
+    <span class="no">Son</span><span class="p">(){</span>
+        <span class="no">System</span><span class="p">.</span><span class="nf">out</span><span class="p">.</span><span class="nf">print</span><span class="p">(</span><span class="s2">"子类构造函数--"</span><span class="p">);</span>
+        <span class="no">System</span><span class="p">.</span><span class="nf">out</span><span class="p">.</span><span class="nf">println</span><span class="p">(</span><span class="s2">"调用子类普通全局变量:"</span><span class="o">+</span><span class="no">SonVar</span><span class="p">);</span> 
+    <span class="p">}</span>    
+    
+ 
+  <span class="kp">public</span> <span class="n">static</span> <span class="n">void</span> <span class="n">main</span><span class="p">(</span><span class="no">String</span><span class="p">[]</span> <span class="n">args</span><span class="p">)</span> <span class="p">{</span>
+        
+        <span class="no">System</span><span class="p">.</span><span class="nf">out</span><span class="p">.</span><span class="nf">println</span><span class="p">(</span><span class="s2">"main办法执行"</span><span class="p">);</span>
+        <span class="n">new</span> <span class="no">Son</span><span class="p">();</span>
+        <span class="no">System</span><span class="p">.</span><span class="nf">out</span><span class="p">.</span><span class="nf">println</span><span class="p">(</span><span class="s2">"main办法执行结束"</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>输出结果：</p>
+<pre>
+父类静态初始化块--调用父类静态全局变量:fatherStaticVar
+子类静态初始化块--调用子类静态全局变量:SonStaticVar
+main办法执行
+父类初始化块--调用父类普通全局变量:fatherVar
+父类构造函数--调用父类普通全局变量:fatherVar
+子类初始化块--调用子类普通全局变量:SonVar
+子类构造函数--调用子类普通全局变量:SonVar
+main办法执行结束
+</pre>
+
+<p>由上，我们可以知道子父类执行顺序如下：</p>
+<ol>
+<li>父类--静态全局变量</li>
+<li>父类--静态初始化块</li>
+<li>子类--静态全局变量</li>
+<li>子类--静态初始化块</li>
+<li>main方法</li>
+<li>父类--全局变量</li>                                                       
+<li>父类--初始化块 </li>
+<li>父类--构造器</li>
+<li>子类--全局变量</li>
+<li>子类--初始化块</li>
+<li>子类--构造器</li>
+</ol>
+
+
+
+<h3>4.总结</h3>
+<p>静态的变量和代码块总是在类加载到内存中（不需要new）就有了，所以在main办法前。子类创建对象前必须创建父类对象，所以父类的构建总会在子类之前。至于为什么是这样的，那就是jvm的内容了，以后肯定会再理解的。</p>
+
+<h3>5.待理解的</h3>
+<p>遗留了几个问题，还没研究透，等理解了再补上：</p>
+<ol>
+<li>静态办法和普通办法的初始化顺序呢？</li>
+<li>静态方法、静态属性、非静态属性都没有多态，只有非静态方法有多态，如何理解？</li>
+</ol>
+
+
+
+<br>
+<br>
+<h5>结语：简单的了解了一下类的构造顺序，也引出了不少问题，以后的学习中再进一步思考吧！</h5>
+
+<br>
+<br>
+<h5>以上</h5>
+
+
+
+					<p class="author_date">发表于: 25 Mar 2018</p>
+
+				</div>
+				
+
+				<!-- 引用底部代码部分 -->
+				<footer>
+	<!-- <a href="http://yubiaobin.github.com/">返回首页</a> -->
+	<span>2018@陈润基</span>
+	
+	
+<!-- 
+	<script type="text/javascript">
+	var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+	document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3F7cfeeba2e3844f06b817b0b2cb423ce9' type='text/javascript'%3E%3C/script%3E"));
+	</script>
+-->
+	
+	<script>
+	var _hmt = _hmt || [];
+	(function() {
+	  var hm = document.createElement("script");
+	  hm.src = "https://hm.baidu.com/hm.js?ce5ca43ae7600468de9500d5cdca5f2b";
+	  var s = document.getElementsByTagName("script")[0]; 
+	  s.parentNode.insertBefore(hm, s);
+	})();
+	</script>
+
+</footer>
+
+
+
+			</div>
+		</div>
+　　 </body>
+</html>

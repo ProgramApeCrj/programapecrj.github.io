@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="keywords" content="crj">
+		<meta name="description" content="crj。">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Java路径问题（分类：编程规范）</title>
+		<link rel="icon" href="/img/favicon.ico" type="image/x-icon"/>
+		<link rel="shortcut icon" href="/img/favicon.ico" type="image/x-icon"/>
+		<link href="/css/layout.css" rel="stylesheet" media="screen">
+		<!-- <link href="/css/pygment_trac.css" rel="stylesheet" media="screen">-->
+　　 </head>
+　　 <body>
+		<div id="container">
+	       <div class="inner">
+				<!-- 引用头部代码部分 -->
+				<header>
+	<h1>ProgramApeCrj 's Blog</h1>
+    <h2><a href="http://programapecrj.github.io" target="_blank" class="header_jekyll">--  a small notebook</a></h2>
+    <div id="downloads" class="clearfix">
+		<a href="https://github.com/ProgramApeCrj/programapecrj.github.io/" id="view-on-github" target="_blank" class="button"><span>View on GitHub</span></a>
+	</div>
+</header>
+
+
+
+				
+				<!-- 内容部分 -->
+				<div class="content">
+
+					<h1>Java路径问题（分类：编程规范）</h1>
+					<p class="copyright">（微信[a997247716] 版权所有-陈润基,转载请注明来处）</p>
+					<section class="downloads clearfix back_to_index">
+						<a href="http://localhost:4000/index.html" id="back-to-index" class="button"><span>&lt;&lt; Back</span></a>
+					</section>
+					<h5>前言：项目在编程阶段和发布阶段，目录情况是不同的。</h5>
+<br>
+<br>
+内容导航
+<ul>
+<li>0.普通的Java项目</li>
+<li>1.web项目--获取文件路径</li>
+<li>2.web项目--获取URL路径</li>
+<li>3.总结</li>
+</ul>
+
+
+<br>
+
+<h3>0.普通的Java项目</h3>
+<p>开发普通的Java项目时，我们可能会遇到以下场景需要用到路径：</p>
+<ol>
+<li>读取配置文件</li>
+<li>读取项目中的图片</li>
+<li>使用项目中的exe</li>
+</ol>
+<p>那么如何获取项目所在的动态路径呢：</p>
+
+<p>01.getCanonicalPath()函数：</p>
+<pre>
+//对于getCanonicalPath()函数，“."就表示当前的文件夹，而”..“则表示当前文件夹的上一级文件夹 
+System.out.println(new File("..").getCanonicalPath()); 
+</pre>
+
+<p>02.getAbsolutePath()函数：</p>
+<pre>
+//与getCanonicalPath()函数不同的是，不能使用“."和”..“去获取当前和上一级文件夹
+System.out.println(new File("").getAbsolutePath());
+</pre>
+
+<p>但是问题来了，输出上面的语句我们可以知道，上面得到路径的根目录仅仅是项目名称，不同时期的项目，项目的Java文件的根目录是不同的：</p>
+<ol>
+<li>编程时，根目录是：项目名/src下</li>
+<li>编译后，根目录是：项目名/bin下</li>
+<li>打包成JAR包，根目录是：项目名</li>
+</ol>
+
+<p>情况这么多变，不可能每次都改吧？下面说一下如何进一步解决：</p>
+<pre>
+//第一个办法
+System.out.println(Class.class.getClass().getResource("/").getPath());
+//第二个办法
+System.out.println(Thread.currentThread().getContextClassLoader().getResource("").getPath());
+</pre>
+<p>你可以试着输出看看，这样解决了。（具体why还在研究ing...）</p>
+
+
+
+<h3>1.web项目--获取文件路径</h3>
+
+<p>开发Java的web项目时，我们可能会遇到以下场景需要用到路径：</p>
+<ol>
+<li>读取配置文件</li>
+<li>存储上传的图片</li>
+<li>如何保证打包成war包前后，路径可以自动获取？</li>
+</ol>
+<p>那么如何获取项目所在的动态路径呢：</p>
+<p>01.如果是在Java类中获取，那么用上面的办法：</p>
+<pre>
+System.out.println(Thread.currentThread().getContextClassLoader().getResource("").getPath());
+</pre>	
+
+<p>02.如果是在Servlet中获取，那么要借助ServletContext：</p>
+<pre>
+request.getSession().getServletContext().getRealPath(“”);
+</pre>	
+
+<p>但是Servlet中获取的只是项目名称的根目录，web项目的情况比较复杂，
+所以可以单独抽象一个xml出来放这些配置的路径，这样有利于更改。</p>
+
+<h3>2.web项目--获取URL路径</h3>
+<p>我们访问一个相对路径的URL时，
+一般都是相对于当前的URL去跳转，
+
+但是实际上我们需要的是相对于网站的根URL去跳转，
+那么要怎么写才能保证每次跳转都是正确的？分为４步走：</p>
+
+<p>01.获取网站的根URL</p>
+<pre> 
+String path = request.getContextPath(); 
+String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/"; 
+
+</pre>
+
+<p>02.将 "项目路径basePath" 放入pageContext中</p>
+<pre>
+pageContext.setAttribute("basePath",basePath);
+</pre>
+
+<p>03.在HTML中直接用EL表达式获取根URL，然后＋上要跳转的URL</p>
+<pre>
+<xmp>
+<html> 
+<head> </head> 
+<body> 
+<a href="${pageScope.basePath}register.jsp"> 注册</a> 
+</body> 
+</html> 
+</xmp>
+</pre>
+<p>04.如果还觉得写${pageScope.basePath}麻烦，
+可以利用HTML的base标签：</p>
+<pre><xmp>
+<html> 
+<head> 
+<!-- base需要放到head中 --> 
+<base href="${pageScope.basePath}"> 
+</head> 
+
+// 这里我们就可以直接使用
+<a href="register.jsp">注册</a> 
+</html> 
+</xmp></pre>
+
+
+
+<h3>3.总结</h3>
+<p>以上就是三种情景下获取相对路径的办法了，这样无论项目如何迁移，都不需要考虑路径问题，如果遇到复杂点的情况，也可以抽象成xml配置。</p>
+
+
+
+
+
+<br>
+<h5>结语：瞬间明朗了一点．．．．</h5>
+
+<br>
+<br>
+<h5>以上</h5>
+
+
+
+					<p class="author_date">发表于: 15 Apr 2018</p>
+
+				</div>
+				
+
+				<!-- 引用底部代码部分 -->
+				<footer>
+	<!-- <a href="http://yubiaobin.github.com/">返回首页</a> -->
+	<span>2018@陈润基</span>
+	
+	
+<!-- 
+	<script type="text/javascript">
+	var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+	document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3F7cfeeba2e3844f06b817b0b2cb423ce9' type='text/javascript'%3E%3C/script%3E"));
+	</script>
+-->
+	
+	<script>
+	var _hmt = _hmt || [];
+	(function() {
+	  var hm = document.createElement("script");
+	  hm.src = "https://hm.baidu.com/hm.js?ce5ca43ae7600468de9500d5cdca5f2b";
+	  var s = document.getElementsByTagName("script")[0]; 
+	  s.parentNode.insertBefore(hm, s);
+	})();
+	</script>
+
+</footer>
+
+
+
+			</div>
+		</div>
+　　 </body>
+</html>

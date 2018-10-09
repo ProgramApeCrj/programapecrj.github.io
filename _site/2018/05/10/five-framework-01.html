@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="keywords" content="crj">
+		<meta name="description" content="crj。">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>mybatis学习（分类：Java五个框架）</title>
+		<link rel="icon" href="/img/favicon.ico" type="image/x-icon"/>
+		<link rel="shortcut icon" href="/img/favicon.ico" type="image/x-icon"/>
+		<link href="/css/layout.css" rel="stylesheet" media="screen">
+		<!-- <link href="/css/pygment_trac.css" rel="stylesheet" media="screen">-->
+　　 </head>
+　　 <body>
+		<div id="container">
+	       <div class="inner">
+				<!-- 引用头部代码部分 -->
+				<header>
+	<h1>ProgramApeCrj 's Blog</h1>
+    <h2><a href="http://programapecrj.github.io" target="_blank" class="header_jekyll">--  a small notebook</a></h2>
+    <div id="downloads" class="clearfix">
+		<a href="https://github.com/ProgramApeCrj/programapecrj.github.io/" id="view-on-github" target="_blank" class="button"><span>View on GitHub</span></a>
+	</div>
+</header>
+
+
+
+				
+				<!-- 内容部分 -->
+				<div class="content">
+
+					<h1>mybatis学习（分类：Java五个框架）</h1>
+					<p class="copyright">（微信[a997247716] 版权所有-陈润基,转载请注明来处）</p>
+					<section class="downloads clearfix back_to_index">
+						<a href="http://localhost:4000/index.html" id="back-to-index" class="button"><span>&lt;&lt; Back</span></a>
+					</section>
+					<h5>前言:
+主要是列出学习mybaris的大概思路和一些要注意到的点，
+有些网上可以直接找到对应demo，记录下来便于复习。
+有些网上可以直接找到对应的笔记，作为参考记录下来。
+有些没有，标上//TODO，以后可以自己补充。</h5>
+<br>
+<br>
+内容导航
+<ul>
+
+<li>1.HelloWorld的demo</li>
+<li>2.构建简单项目</li>
+<li>3.加一些复杂的配置</li>
+<li>4.了解那些暂时不会用到的</li>
+<li>5.整合框架</li>
+<li>6.关于常见错误</li>
+<li>7.总结</li>
+</ul>
+
+
+<br>
+
+<h3>1.HelloWorld的demo</h3>
+
+
+<p>一个最基本的mybatis的demo需要：<p>
+
+
+<h4>01.jar包或maven的pom配置</h4>
+
+
+
+<h4>02.连接数据库与创建数据源的XML配置</h4>
+
+
+
+<h4>03.根据配置文件获取SqlSessionFactory和SqlSession的工具类</h4>
+
+
+
+<h4>04.数据库一张表及对应实体类</h4>
+
+
+
+<h4>05.dao层接口的创建:</h4>
+
+<ul>
+<li>需要实现类-->使用session的selectXX()办法</li>
+
+<li>不需实现类(官方推荐)-->使用mapper生成对应的dao实现类
+，如果办法存在多个参数，需要使用@Param。</li>
+
+</ul>
+
+
+
+<h4>06.写接口对应的SQL语句的XML(可用注解替代)</h4>
+
+
+
+<h4>07.service层调用dao层</h4>
+
+
+
+
+
+
+
+<h3>2.构建简单项目</h3>
+
+<p>在上面Hello Word 基础上，再理解一些东西，就能构建简单的项目了：</p>
+
+<h4>01.可以抽出配置文件</h4>
+<ul>
+<li>新建一个db.properties，格式为xx = xx</li>
+<li>在连接数据库的配置文件中引入：
+&lt;properties resource="db.properties"&gt;&lt;/properties&gt; </li>
+<li>然后使用${xx}即可。</li>
+</ul>
+
+<h4>02.了解事务提交</h4>
+<ul>
+<li>sqlSessionFactory的openSession(参数)办法，参数可填true 或 false 。</li>
+<li>默认是false，不开启事务提交，需要自己提交和设置回滚。</li>
+</ul>
+
+<h4>03.设置别名</h4>
+
+
+<ul>
+<li>类型别名是为 Java 类型设置一个短的名字。它只和 XML 配置有关，存在的意义仅在于用来减少类完全限定名的冗余。</li>
+</ul>
+
+<h4>04.知道Mybatis中实体类属性和数据库数据列之间映射的四种办法：</h4>
+<ul>
+<li>通过XML映射文件中的resultMap(推荐)</li>
+<li>设置驼峰命名转换</li>
+<li>通过使用在SQL语句中定义别名完成映射</li>
+<li>通过注解@Results和@Result</li>
+</ul>
+参考:
+https://blog.csdn.net/lmy86263/article/details/53150091
+</p>
+
+<h4>05.知道${ }和#{ }的区别和使用场景</h4>
+<ul>
+<li>#{ } 会生成预编译SQL，防止SQL注入。</li>
+<li>${ }一般用在order by，limit，group by 等场所。</li>
+</ul>
+
+
+<h4>6.sql的xml的一些参数说明</h4>
+
+<ul>
+<li>http://www.mybatis.org/mybatis-3/zh/sqlmap-xml.html</li>
+</ul>
+
+
+<h4>07.增删改查走起</h4>
+
+<ul>
+<li>实践单表增删改查demo：https://www.yiibai.com/mybatis/mybatis-curd.html#</li>
+</ul>
+
+
+<h3>3.加一些复杂的配置</h3>
+<p>开始学习一些稍微复杂一点的配置：<p>
+
+<h4>一对多</h4>
+
+<ul>
+<li>在一的一端的实体类加上多的一端的集合 : private List<类名> xxxx;</li>
+<li>在sql的xml中一的一端使用&lt;collection&gt;属性包含多的一端</li>
+<li>demo:
+https://www.yiibai.com/mybatis/mybatis-one2many.html</li>
+</ul>
+
+<h4>多对一</h4>
+<ul>
+<li>在多的一端中加入一的一端的实体类 : private 类名 xxxx</li>
+<li>在sql的xml中多的一端使用 &lt;association&gt; 属性包含一的一端</li>
+<li>demo:
+https://www.yiibai.com/mybatis/mybatis-many2one.html</li>
+</ul>
+
+
+<h4>双向多对一</h4>
+<ul>
+<li>这个是学习hibernate知道的概念。
+双向指的是代码层次的双向，在数据库表结构依旧是不变的。
+
+mybatis模仿hibernate的双向多对一的话，其实就是上面两个的结合：
+使用&lt;collection&gt;+ &lt;/association&gt;
+</li>
+
+<li>demo:
+//TODO</li>
+</ul>
+
+
+<h4>多对多</h4>
+<ul>
+<li>多对多需要第三张表的帮忙
+</li>
+
+<li>demo:
+/https://www.yiibai.com/mybatis/mybatis-many2many.html</li>
+</ul>
+
+
+<h4>一对一的两种方式</h4>
+<ul>
+<li>使用主键关联
+</li>
+<li>使用外键关联</li>
+<li>demo://TODO</li>
+</ul>
+
+<h4>分页</h4>
+<ul>
+<li>demo:
+https://www.yiibai.com/mybatis/mybatis_pagination.html
+</li>
+</ul>
+
+
+<h4>动态SQL</h4>
+<ul>
+<li>比如条件检索时，不用where 1 = 1。使用where标签就可以。</li>
+<li>比如判断给定的值是否为null，使用if标签。</li>
+
+<li>等等...
+</li>
+<li>参考:
+https://www.yiibai.com/mybatis/mybatis-dynamic-sql.html</li>
+</ul>
+
+<h4>日志</h4>
+<ul>
+<li>动态SQL无法在debug模式下调试，只能使用日志调试。</li>
+
+<li>需要引入log4j的jar包+配置log4j.properties。</li>
+
+</ul>
+<h4>连接池</h4>
+<li>修改dataSource type。</li>
+
+
+
+<h3>4.了解那些暂时不会用到的</h3>
+<p>了解一下的，将来可能会用到的：</p>
+
+<h4>二级缓存</h4>
+<ul>
+<li>首先知道缓存是针对查询的，增删改都会刷新缓存，以免造成数据库的查询出现脏读。</li>
+
+<li>一级缓存的话，无需配置，自动开启，同个session共享。</li>
+<li>一级缓存除非进行增删改，或者session.close。不然第二次查询都会从缓存中拿。</li>
+
+<li>二级缓存的话，同个mapper(nasepace)共享，需要一定的配置。</li>
+<li>二级缓存在执行session.close后，将session中的数据写到二级缓存区域，其他同个mapper的session共享。</li>
+</ul>
+
+
+
+<h4>延迟加载</h4>
+<ul>
+
+<li>使用mybatis自带</li>
+<li>或自己写代码判断的</li>
+</ul>
+
+<h4>批处理</h4>
+<ul>
+<li>//TODO</li>
+</ul>	
+
+
+<h4>逆向工程</h4>
+<ul>
+<li>可以针对单表自动生成mybatis执行所需要的代码（
+包括mapper.xml、mapper.java、po..）</li>
+</ul>
+
+<h4>拦截器</h4>
+<ul>
+<li>可用于分页  / 读写分离 / 统计分析sql的执行时间</li>
+<li>参考	: https://www.cnblogs.com/linkstar/p/6039513.html?utm_source=itdadao&utm_medium=referral</li>
+</ul>
+
+
+
+<h4>主键生成策略 / 级联增删改 / BaseDao</h4>
+<ul>
+<li>学了hibernate才知道的一些东西，就想着mybatis有没有对应的，答案是肯定的，不过hibernate实现比较容易点。</li>
+<li>//TODO</li>
+</ul>	
+
+
+
+
+<h3>5.整合框架</h3>
+
+
+<p>一般是指整合spring，需要用到MyBatis-Spring，官方文档如下：</p><p>http://www.mybatis.org/spring/zh/index.html</p>
+
+<p>在基本的 MyBatis 中，session工厂可以使用 SqlSessionFactoryBuilder 来创建。而在 MyBatis-Spring 中，则使用 SqlSessionFactoryBean 来替代。
+
+在此基础上，可以总结为五种办法：</p>
+
+<ul>
+<li>1.采用数据映射器（MapperFactoryBean）的方式，
+不用写mybatis映射文件，采用注解方式提供相应的sql语句和输入参数。</li>
+
+<li>2.采用接口org.apache.ibatis.session.SqlSession的实现类org.mybatis.spring.SqlSessionTemplate</li>
+
+<li>3.采用抽象类org.mybatis.spring.support.SqlSessionDaoSupport提供SqlSession</li>
+
+<li>4.使用注入映射器:MapperScannerConfigurer</li>
+
+<li>5.TKmybatis</li>
+
+<li>参考:
+https://www.cnblogs.com/junzi2099/p/8315881.html#_label2</li>
+
+</ul>
+<h3>6.关于常见错误</h3>
+<ul>
+
+<li>//TODO</li>
+</ul>	
+
+
+<h3>7.总结</h3>
+
+<p>以上就是我学习mybaits的路线和思路了
+总结下来就是：</p>
+</ul>
+<li>(1) 打个helloWorld涨涨士气。</li>
+<li>(2) 在此基础上看哪些可以简化，哪些需要注意，写个简单的增删改查与原生JDBC对比。</li>
+<li>(3) 然后学习比较复杂和核心的东西。</li>
+<li>(4) 了解一些额外的知识，以后用到知道去学习。</li>
+<li>(5) 知道怎么配合其他框架使用。</li>
+<li>(6) 多踩坑，多积累。</li>
+</ul>
+<p>这样看下来mybaits其实就是简化了连接数据库 / 增删改查的过程，
+特别是查，不需要自己手动再遍历结果集。
+并支持动态sql，
+让sql语句变成xml，便于修改。
+
+但与hibernate对比的话，比较依赖手写SQL语句，有时候要写很多。
+SQL语句依赖于数据库，导致数据库移植性差，不能随意更换数据库。</p>
+
+
+
+<br>
+<br>
+<h5>结语：列出整体思路方便回顾，可能会有一些遗漏和错误，以后慢慢迭代。接下来就是其他框架了。。。</h5>
+
+<br>
+<br>
+<h5>以上</h5>
+
+
+
+					<p class="author_date">发表于: 10 May 2018</p>
+
+				</div>
+				
+
+				<!-- 引用底部代码部分 -->
+				<footer>
+	<!-- <a href="http://yubiaobin.github.com/">返回首页</a> -->
+	<span>2018@陈润基</span>
+	
+	
+<!-- 
+	<script type="text/javascript">
+	var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+	document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3F7cfeeba2e3844f06b817b0b2cb423ce9' type='text/javascript'%3E%3C/script%3E"));
+	</script>
+-->
+	
+	<script>
+	var _hmt = _hmt || [];
+	(function() {
+	  var hm = document.createElement("script");
+	  hm.src = "https://hm.baidu.com/hm.js?ce5ca43ae7600468de9500d5cdca5f2b";
+	  var s = document.getElementsByTagName("script")[0]; 
+	  s.parentNode.insertBefore(hm, s);
+	})();
+	</script>
+
+</footer>
+
+
+
+			</div>
+		</div>
+　　 </body>
+</html>

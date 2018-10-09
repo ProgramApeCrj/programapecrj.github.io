@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="keywords" content="crj">
+		<meta name="description" content="crj。">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>docker遇上Nginx ＋ Vue：目录映射（分类：从0开始docker学习）</title>
+		<link rel="icon" href="/img/favicon.ico" type="image/x-icon"/>
+		<link rel="shortcut icon" href="/img/favicon.ico" type="image/x-icon"/>
+		<link href="/css/layout.css" rel="stylesheet" media="screen">
+		<!-- <link href="/css/pygment_trac.css" rel="stylesheet" media="screen">-->
+　　 </head>
+　　 <body>
+		<div id="container">
+	       <div class="inner">
+				<!-- 引用头部代码部分 -->
+				<header>
+	<h1>ProgramApeCrj 's Blog</h1>
+    <h2><a href="http://programapecrj.github.io" target="_blank" class="header_jekyll">--  a small notebook</a></h2>
+    <div id="downloads" class="clearfix">
+		<a href="https://github.com/ProgramApeCrj/programapecrj.github.io/" id="view-on-github" target="_blank" class="button"><span>View on GitHub</span></a>
+	</div>
+</header>
+
+
+
+				
+				<!-- 内容部分 -->
+				<div class="content">
+
+					<h1>docker遇上Nginx ＋ Vue：目录映射（分类：从0开始docker学习）</h1>
+					<p class="copyright">（微信[a997247716] 版权所有-陈润基,转载请注明来处）</p>
+					<section class="downloads clearfix back_to_index">
+						<a href="http://localhost:4000/index.html" id="back-to-index" class="button"><span>&lt;&lt; Back</span></a>
+					</section>
+					<p>前言：上一篇博文<a href="https://programapecrj.github.io/2018/07/29/docker-03.html">《第一个docker化的Java项目》</a>
+中，在构建镜像时，我将整个Java项目copy进镜像中，镜像生成的所有容器就都有了这个项目。于是容器启动后，项目就能跑起来。但这其实是一种不好的做法，接下来讲讲为啥子。</p>
+
+<p><br /></p>
+<h2 id="导航">导航</h2>
+<ol>
+  <li>为什么需要目录映射</li>
+  <li>如何进行目录映射</li>
+  <li>使用Nginx容器部署Vue项目</li>
+  <li>总结</li>
+</ol>
+
+<p><br /></p>
+<h1 id="1-为什么需要目录映射">1. 为什么需要目录映射</h1>
+<p>构建镜像的时候就把项目放进去，的确很方便，因为生成的容器都自带了这个项目。</p>
+
+<p>但这就导致了一个问题，一旦我们想修改项目内容，就必须进到容器中修改，如果我们不小心删除了容器，镜像重新生成的容器将不会保留我们修改过的项目内容。</p>
+
+<p>另外，我们的配置，日志等一系列的东西，都必须是持久化的。那如何解决这个问题呢？答案是目录映射。</p>
+
+<p>将容器中需要持久化，需要经常变动的文件拿到容器外，启动容器时再将文件映射进容器中。这样即使容器删除了，容器外的文件依旧存在，下次构建容器时再进行映射，配方就还是原来的配方了。</p>
+
+<p><br /></p>
+<h1 id="2如何进行目录映射">2.如何进行目录映射</h1>
+<p>下面以Nginx为例，讲一下如何进行目录映射。进行目录映射需要知道三点：</p>
+
+<ul>
+  <li>确认需要取出的文件是哪些</li>
+  <li>如何将容器中的目录拿出来</li>
+  <li>启动时指定目录映射</li>
+</ul>
+
+<p><br /></p>
+<h4 id="第一点确认需要取出的文件是哪些">第一点，确认需要取出的文件是哪些：</h4>
+
+<p>一般Nginx需要经常变动，持久化的文件夹有：
+存放web项目的，存放Nginx配置的以及存放log的。</p>
+
+<p>以前几篇博文的Nginx容器
+(hub.c.163.com/library/nginx:latest)
+为例，进入到容器内，我们分别在下面路径找到对应文件夹：</p>
+<ul>
+  <li>/usr/share/nginx/html</li>
+  <li>/etc/nginx</li>
+  <li>/var/log/nginx/</li>
+</ul>
+
+<p><br /></p>
+<h4 id="第二点如何将这些目录搞出来">第二点，如何将这些目录搞出来：</h4>
+
+<p>启动容器后，执行以下命令</p>
+<blockquote>
+  <p>docker container cp 容器名: /usr/share/nginx/html .</p>
+</blockquote>
+
+<p>这样就将容器内的 /usr/share/nginx/html 复制到当前目录，最后的 . 代表当前目录，其他目录同理，不过要记得改下名字：</p>
+
+<p><br /></p>
+<blockquote>
+  <p>docker container cp 容器名: /etc/nginx .</p>
+</blockquote>
+
+<blockquote>
+  <p>mv nginx conf</p>
+</blockquote>
+
+<blockquote>
+  <p>docker container cp 容器名: /var/log/nginx/ .</p>
+</blockquote>
+
+<blockquote>
+  <p>mv nginx log</p>
+</blockquote>
+
+<p><br /></p>
+<h4 id="第三点启动时指定目录映射">第三点，启动时指定目录映射</h4>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker container run \
+--rm --name mynginx \
+--volume "$PWD/html":/usr/share/nginx/html \
+--volume "$PWD/conf":/etc/nginx \
+--volume "$PWD/log":/var/log/nginx/ \
+-p:8080:80 -d \ hub.c.163.com/library/nginx 
+</code></pre></div></div>
+
+<p>至此，启动容器后，修改html，conf，log中的内容，容器内也会跟着修改。容器停掉或者删除，html，conf，log中的内容也会保留下来，下次启动新容器（同个镜像），只需要再做映射即可。</p>
+
+<p><br /></p>
+<h1 id="3使用nginx容器部署vue项目">3.使用Nginx容器部署Vue项目</h1>
+<p>上面已经讲解了如何设置目录映射，现在让我们部署一个Vue项目。</p>
+
+<p>首选，用上面的命令启动容器：</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker container run \
+--rm --name mynginx \
+--volume "$PWD/html":/usr/share/nginx/html \
+--volume "$PWD/conf":/etc/nginx \
+--volume "$PWD/log":/var/log/nginx/ \
+-p:8080:80 -d \ hub.c.163.com/library/nginx 
+</code></pre></div></div>
+
+<p>然后，将打包好的Vue项目（名字一般为dist）放进html中。</p>
+
+<p>进入到/conf/conf.d下，打开default.conf，看到</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>省略。。。。
+
+location / {
+   root   /usr/share/nginx/html;
+   index  index.html index.htm;
+}
+
+省略。。。。
+</code></pre></div></div>
+
+<p>修改为</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>省略。。。。
+
+location / {
+   root   /usr/share/nginx/html/dist(项目名);
+   try_files $uri $uri/ @router;
+   index  index.html index.htm;
+}  
+location @router {
+    rewrite ^.*$ /index.html last;
+}
+
+省略。。。。
+</code></pre></div></div>
+
+<p>保存，重启</p>
+<blockquote>
+  <p>docker restart 容器名</p>
+</blockquote>
+
+<p>然后访问（主机ip+容器对外端口）即可。后面项目的修改，配置的修改，日志的查看，都可以在容器外进行操作，容器只是提供了运行环境。</p>
+
+<p><br /></p>
+<h1 id="4总结">4.总结</h1>
+<p>其实就跟我们在win上玩Linux时，虚拟机目录映射类似。虚拟机只是提供运行环境，具体需要经常变更文件映射到外面，便于修改。</p>
+
+<p><br /></p>
+<h5 id="结语路途依旧很远慢慢来">结语：路途依旧很远，慢慢来。。</h5>
+
+					<p class="author_date">发表于: 20 Aug 2018</p>
+
+				</div>
+				
+
+				<!-- 引用底部代码部分 -->
+				<footer>
+	<!-- <a href="http://yubiaobin.github.com/">返回首页</a> -->
+	<span>2018@陈润基</span>
+	
+	
+<!-- 
+	<script type="text/javascript">
+	var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+	document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3F7cfeeba2e3844f06b817b0b2cb423ce9' type='text/javascript'%3E%3C/script%3E"));
+	</script>
+-->
+	
+	<script>
+	var _hmt = _hmt || [];
+	(function() {
+	  var hm = document.createElement("script");
+	  hm.src = "https://hm.baidu.com/hm.js?ce5ca43ae7600468de9500d5cdca5f2b";
+	  var s = document.getElementsByTagName("script")[0]; 
+	  s.parentNode.insertBefore(hm, s);
+	})();
+	</script>
+
+</footer>
+
+
+
+			</div>
+		</div>
+　　 </body>
+</html>

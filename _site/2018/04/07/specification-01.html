@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="keywords" content="crj">
+		<meta name="description" content="crj。">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Java编码问题（分类：编程规范）</title>
+		<link rel="icon" href="/img/favicon.ico" type="image/x-icon"/>
+		<link rel="shortcut icon" href="/img/favicon.ico" type="image/x-icon"/>
+		<link href="/css/layout.css" rel="stylesheet" media="screen">
+		<!-- <link href="/css/pygment_trac.css" rel="stylesheet" media="screen">-->
+　　 </head>
+　　 <body>
+		<div id="container">
+	       <div class="inner">
+				<!-- 引用头部代码部分 -->
+				<header>
+	<h1>ProgramApeCrj 's Blog</h1>
+    <h2><a href="http://programapecrj.github.io" target="_blank" class="header_jekyll">--  a small notebook</a></h2>
+    <div id="downloads" class="clearfix">
+		<a href="https://github.com/ProgramApeCrj/programapecrj.github.io/" id="view-on-github" target="_blank" class="button"><span>View on GitHub</span></a>
+	</div>
+</header>
+
+
+
+				
+				<!-- 内容部分 -->
+				<div class="content">
+
+					<h1>Java编码问题（分类：编程规范）</h1>
+					<p class="copyright">（微信[a997247716] 版权所有-陈润基,转载请注明来处）</p>
+					<section class="downloads clearfix back_to_index">
+						<a href="http://localhost:4000/index.html" id="back-to-index" class="button"><span>&lt;&lt; Back</span></a>
+					</section>
+					<h5>前言：今天我想说的是：编程中，我们经常烫烫烫锟斤拷．．．．。啊嘞，我刚才说什么来着？怎么乱码了？</h5>
+<br>
+<br>
+内容导航
+<ul>
+<li>0.为什么需要编码？为什么会出现乱码？</li>
+<li>1.ASCII / GB类的汉字编码 / Unicode  / UTF-8 /  gbk 的区别?</li>
+<li>2.Java的编码</li>
+<li>3.文件本身的编码</li>
+<li>4.java文件的编码</li>
+<li>5.jsp文件的编码</li>
+<li>6.HTML文件的编码</li>
+<li>7.总结</li>
+<li>8.遗留问题</li>
+</ul>
+
+
+<br>
+
+<h3>0.为什么需要编码？为什么会出现乱码？</h3>
+<p>编码，就是一种约定的规则。</p>
+<p>乱码，就是对规则匹配错误导致的。</p>
+
+<p>比如：有一种编码规则叫"猴tf-8"，</p>
+<p>它表示，如果老师在你头上敲三下，代表你今晚三更来找他，教你七十二变。</p>
+
+<p>又比如：有一种编码叫 "人BK"，</p>
+<p>它表示，如果老师在你头上敲三下，代表你该醒醒听课了。</p>
+
+<p>假设你的默认编码是"人BK"，菩提老祖以为你是 "猴tf-8"，</p>
+<p>敲了你三下(编码)，你解析(解码)成"该醒醒听课了"。</p>
+<p>那你就错过了学会七十二变的本事。</p>
+
+<p>假如孙悟空的默认编码是 "猴tf-8"，老师以为他是"人BK" ，</p>
+<p>敲了他三下头，然后他因为半夜三更入室抢劫被抓....</p>
+
+<p>这就是编码，定义了某种规则。这就是乱码，规则理解错误，就全乱了....</p>
+
+
+
+<h3>1.ASCII / GB类的汉字编码 / Unicode  / UTF-8 /  gbk 的区别？</h3>
+
+<p>上个世纪60年代，美国制定了一套字符编码，对英语字符与二进制位之间的关系，做了统一规定。这被称为ASCII码，一直沿用至今。</p>
+
+<p>英语用128个符号编码就够了，但是用来表示其他语言，128个符号是不够的。</p>
+<p>每种语言都要一定的解决方案，中文也不例外。</p>
+<p>于是出现了GB类的汉字编码，比如说gbk、GB2312．．．等。</p>
+
+<p>后来人们觉得，如果有一种编码规则，将世界上所有的符号都纳入其中，就不需要再考虑乱码问题了！！</p>
+<p>于是出现了Unicode，就像它的名字都表示的，这是一种所有符号的编码。</p>
+<p>这就是Unicode字符集，但它是一种解决方案，并不代表具体的方式。</p>
+<p>(就像插入排序是一种思想,但是有很多具体的代码实现方式)</p>
+
+<p>而UTF-8就是在互联网上使用最广的一种unicode的实现方式。其他实现方式还包括UTF-16和UTF-32．．．等。</p>
+
+
+
+
+<h3>2.Java的编码</h3>
+<p>在JVM中、内存中，在代码里声明的每一个char、String类型的变量中字符以unicode格式存在。</p>
+
+
+<p>unicode格式究竟长什么样呢？让我们看一看：
+<pre>
+\u6700\u4ee3\u7801\u7f51\u7ad9\u5730\u5740\u3a
+\u77\u77\u77\u2e\u7a\u75\u69\u64\u61\u69\u6d\u61
+</pre>
+
+
+<h3>3.文件本身的编码</h3>
+
+<p>我们在借（chao）鉴（xi）别人作业时，导入项目后，注释和代码中的中文都会变成乱码。</p>
+
+<p>即使改了编码，只会更乱，而不是恢复正常，这是为什么呢？这是因为有些编码信息已经丢失，不可能完全还原的，这就是文件本身的编码。</p>
+
+
+<h3>4.Java文件的编码</h3>
+<p>Java文件的编码又有什么作用呢?</p>
+<p>我们来做个试验：</p>
+<p>修改一个.java文件的编码为utf-8。</p>
+<img width="100%"
+src="http://p2pko6fd6.bkt.clouddn.com/18-04-07@00.png" />
+
+<p>然后加入下面的代码：<p>
+<pre>
+       	String str;
+        
+        str = new String("你好");
+        str = new String(str);
+        System.out.println("默认编码,默认解码:"+str);
+        
+        str = new String("你好");
+        str = new String(str.getBytes("utf-8"),"utf-8");   
+        System.out.println("和页面一样的编码,和页面一样的解码:"+str);
+        
+        str = new String("你好");
+        str = new String(str.getBytes(),"gbk");
+        System.out.println("编码默认,解码为gbk:"+str);
+  
+        str = new String("你好");
+        str = new String(str.getBytes("gbk"));   
+        System.out.println("编码改为gbk,解码默认:"+str);
+</pre>
+<p>输出结果:</p>
+<pre>
+默认编码,默认解码:你好
+和页面一样的编码,和页面一样的解码:你好
+编码默认,解码为gbk:浣犲ソ
+编码改为gbk,解码默认:���
+</pre>
+
+<p>可以看出,在java文件编码为utf-8的时候：</p>
+  <p>str = new String(str);</p>
+<p>其实是等同于</p>
+  <p>str = new String(str.getBytes("utf-8"),"utf-8");   </p>
+<p>也就是我们创建新的字符串的时候，会使用java页面的默认编码去编码和解码。</p>
+
+<p>还可以看到，如果编码和解码设置不同，就会出现乱码。</p>
+
+
+
+
+<h3>5.jsp文件的编码</h3>
+<p>我们写jsp时候经常在开头这么写：</p>
+<pre>
+ <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+</pre>
+
+<p>下面我们来解释一下原因：</p>
+<p>01.pageEncoding</p>
+
+<p>在jsp标准的语法中，如果 pageEncoding属性存在，那么jsp页面的字符编码方式就由pageEncoding决定。如果不存在，jsp页面的字符编码方式就采用默认的ISO-8859-1。</p>
+
+<p>那么这个编码又是干嘛用的呢？</p>
+
+<p>pageEncoding="UTF-8"的作用是设置JSP编译成Servlet时使用的编码，</p>
+<p>设置时要和jsp文件（像上面的Java文件）编码保证一致。</p>
+
+<p>例如，你的jsp文件是以GBK为编码保存的，而在jsp中却指定：</p><p>pageEncoding="UTF-8"，
+就会用GBK的规则去解析UTF-8，</p>
+<p>就会引起JSP内部定义的字符串为乱码。</p>
+<br>
+
+<p>02.contentType</p>
+
+<p>contentType设置的是服务器响应的编码。将数据发送到浏览器前，会对数据进行重新编码时，使用的就是该编码。</p>
+<p>当然，也可以使用response.setCharacterEncoding()修改。</p>
+
+<p>顺便提一下相对的request.setCharacterEncoding()：</p>
+<p>该方法用来指定对浏览器(客户端)发送来(比如表单)的数据进行重新编码
+(或者称为解码)时，使用的编码。</p>
+
+
+<h3>6.html文件的编码</h3>
+<p>content="text/html; charset=UTF-8"
+作用和jsp页面的contentType一样，如果是静态HTML网页，就用这个来指定编码。</p>
+
+
+<h3>7.总结</h3>
+<p>从文件本身到文件之间的传输，
+都要注意转码问题，不然会出现乱码。
+
+但是有时候单纯改变编码也不能解决问题，
+有可能是转换时部分数据丢失了，
+
+最好的方式就是，统一编码。
+
+
+
+<h3>8.遗留问题（下次解决）</h3>
+<ol>
+<li>上面说过文件的编码转换时，会遇到数据丢失的问题，搞清楚为什么？</li>
+<li>Java底层（unicode）转换和处理编码的具体细节。</li>
+<li>数据库的编码问题，做了几个实验，但是还没得出结论．．</li>
+<li>读取xml时候遇到的乱码问题，这个忘记什么时候遇到过，下次遇到再总结。</li>
+<li>其他场景下，统一编码的各种办法，还需要不断学习和实践。</li>
+</ol>
+
+
+
+<br>
+<h5>结语：手持两把锟斤拷，口中疾呼烫烫烫 ，脚踏千朵屯屯屯，笑看万物锘锘锘！</h5>
+
+<br>
+<br>
+<h5>以上</h5>
+
+
+
+					<p class="author_date">发表于: 07 Apr 2018</p>
+
+				</div>
+				
+
+				<!-- 引用底部代码部分 -->
+				<footer>
+	<!-- <a href="http://yubiaobin.github.com/">返回首页</a> -->
+	<span>2018@陈润基</span>
+	
+	
+<!-- 
+	<script type="text/javascript">
+	var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+	document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3F7cfeeba2e3844f06b817b0b2cb423ce9' type='text/javascript'%3E%3C/script%3E"));
+	</script>
+-->
+	
+	<script>
+	var _hmt = _hmt || [];
+	(function() {
+	  var hm = document.createElement("script");
+	  hm.src = "https://hm.baidu.com/hm.js?ce5ca43ae7600468de9500d5cdca5f2b";
+	  var s = document.getElementsByTagName("script")[0]; 
+	  s.parentNode.insertBefore(hm, s);
+	})();
+	</script>
+
+</footer>
+
+
+
+			</div>
+		</div>
+　　 </body>
+</html>

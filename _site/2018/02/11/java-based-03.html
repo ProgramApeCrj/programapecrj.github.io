@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="keywords" content="crj">
+		<meta name="description" content="crj。">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Java的访问控制修饰符【中：修饰类】（分类：Java基础）</title>
+		<link rel="icon" href="/img/favicon.ico" type="image/x-icon"/>
+		<link rel="shortcut icon" href="/img/favicon.ico" type="image/x-icon"/>
+		<link href="/css/layout.css" rel="stylesheet" media="screen">
+		<!-- <link href="/css/pygment_trac.css" rel="stylesheet" media="screen">-->
+　　 </head>
+　　 <body>
+		<div id="container">
+	       <div class="inner">
+				<!-- 引用头部代码部分 -->
+				<header>
+	<h1>ProgramApeCrj 's Blog</h1>
+    <h2><a href="http://programapecrj.github.io" target="_blank" class="header_jekyll">--  a small notebook</a></h2>
+    <div id="downloads" class="clearfix">
+		<a href="https://github.com/ProgramApeCrj/programapecrj.github.io/" id="view-on-github" target="_blank" class="button"><span>View on GitHub</span></a>
+	</div>
+</header>
+
+
+
+				
+				<!-- 内容部分 -->
+				<div class="content">
+
+					<h1>Java的访问控制修饰符【中：修饰类】（分类：Java基础）</h1>
+					<p class="copyright">（微信[a997247716] 版权所有-陈润基,转载请注明来处）</p>
+					<section class="downloads clearfix back_to_index">
+						<a href="http://localhost:4000/index.html" id="back-to-index" class="button"><span>&lt;&lt; Back</span></a>
+					</section>
+					<h5>前言：上次我们讲了访问控制修饰符去修饰办法的情况，这次我们讲访问修饰符修饰类（非内部类）的情况。</h5>
+<br>
+<br>
+内容导航
+<ul>
+<li>1.需要知道的前提知识</li>
+<li>2.修饰符为default</li>
+<li>3.修饰符为public</li>
+<li>4.总结</li>
+</ul>
+
+
+<br>
+
+<h3>1.需要知道的前提知识</h3>
+<p>修饰类（非内部类）的时候，如果修饰符为private或者protected，是不予许的，下面讲的都是修饰"非内部类"的情况。</p>
+<p>下面我们使用一个名称为Test.java的Java文件来展开：</p>
+
+<br>
+
+<h3>2.修饰符default</h3>
+<p>证明:当一个类没有写访问控制修饰符(即default)：</p>
+<p>01.该类可以被本包的类继承</p>
+<p>02.该类不可以被其他包的类继承</p>
+<p>03.一个.java文件中可以有无数个default修饰的类</p>
+
+<br>
+<p>下面只给出证明同个包下的代码(不同包请自行测试):</p>
+
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby">   <span class="k">class</span> <span class="nc">Test</span> <span class="p">{</span>
+    
+   <span class="p">}</span>
+
+   <span class="k">class</span> <span class="nc">Test02</span>  <span class="kp">extend</span> <span class="no">Test</span> <span class="p">{</span>
+    
+   <span class="p">}</span></code></pre></figure>
+
+
+<br>
+
+<h3>3.修饰符为public</h3>
+<p>
+证明:
+当一个类的问控制修饰符为public:</p>
+<p>01.该类可以被本包的类继承</p>
+<p>02.该类可以被其他包的类继承</p>
+<p>03.该类必须与所在的.java文件名称一致。</p>
+<p>04.一个.java文件中可以有0个或1个public修饰的类</p>
+
+<br>
+<p>下面只给出证明同个包下的代码(不同包请自行测试):</p>
+
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby">   <span class="kp">public</span> <span class="k">class</span> <span class="nc">Test</span> <span class="p">{</span>
+    
+   <span class="p">}</span>
+
+   <span class="kp">public</span> <span class="k">class</span> <span class="nc">Test02</span> <span class="p">{</span> <span class="sr">//</span><span class="err">编译器错误提示：</span><span class="no">The</span> <span class="kp">public</span> <span class="n">type</span> <span class="no">Test02</span> <span class="n">must</span> <span class="n">be</span> <span class="n">defined</span> <span class="k">in</span> <span class="n">its</span> <span class="n">own</span> <span class="n">file</span>
+    
+   <span class="p">}</span>
+
+   <span class="k">class</span> <span class="nc">Test03</span>  <span class="kp">extend</span> <span class="no">Test</span> <span class="p">{</span>
+    
+   <span class="p">}</span></code></pre></figure>
+
+<br>
+
+
+<h3>4.总结</h3>
+<p>修饰类的时候(内部类除外)，还是比较好记的:</p>
+<p>1.不能使用private或者protected</p>
+<p>2.一个.java文件夹中可以包含0或1个public修饰的类</p>
+<p>3.一个.java文件夹中可以包含0或多个default修饰的类</p>
+<p>4.public修饰的类，可被本包或其他包的类继承</p>
+<p>5.default修饰的类，可被本包的类继承,不可以被其他包的类继承</p>
+<p>6.一旦使用public修饰类,该类必须和.java文件名称一致</p>
+
+
+<br>
+<br>
+<h5>结语：接下来可以写访问控制修饰符去修饰属性的场景咯.....</h5>
+
+<br>
+<br>
+<h5>以上</h5>
+
+
+
+					<p class="author_date">发表于: 11 Feb 2018</p>
+
+				</div>
+				
+
+				<!-- 引用底部代码部分 -->
+				<footer>
+	<!-- <a href="http://yubiaobin.github.com/">返回首页</a> -->
+	<span>2018@陈润基</span>
+	
+	
+<!-- 
+	<script type="text/javascript">
+	var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+	document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3F7cfeeba2e3844f06b817b0b2cb423ce9' type='text/javascript'%3E%3C/script%3E"));
+	</script>
+-->
+	
+	<script>
+	var _hmt = _hmt || [];
+	(function() {
+	  var hm = document.createElement("script");
+	  hm.src = "https://hm.baidu.com/hm.js?ce5ca43ae7600468de9500d5cdca5f2b";
+	  var s = document.getElementsByTagName("script")[0]; 
+	  s.parentNode.insertBefore(hm, s);
+	})();
+	</script>
+
+</footer>
+
+
+
+			</div>
+		</div>
+　　 </body>
+</html>

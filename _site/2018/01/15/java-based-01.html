@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="keywords" content="crj">
+		<meta name="description" content="crj。">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Java基本数据类型（分类：Java基础）</title>
+		<link rel="icon" href="/img/favicon.ico" type="image/x-icon"/>
+		<link rel="shortcut icon" href="/img/favicon.ico" type="image/x-icon"/>
+		<link href="/css/layout.css" rel="stylesheet" media="screen">
+		<!-- <link href="/css/pygment_trac.css" rel="stylesheet" media="screen">-->
+　　 </head>
+　　 <body>
+		<div id="container">
+	       <div class="inner">
+				<!-- 引用头部代码部分 -->
+				<header>
+	<h1>ProgramApeCrj 's Blog</h1>
+    <h2><a href="http://programapecrj.github.io" target="_blank" class="header_jekyll">--  a small notebook</a></h2>
+    <div id="downloads" class="clearfix">
+		<a href="https://github.com/ProgramApeCrj/programapecrj.github.io/" id="view-on-github" target="_blank" class="button"><span>View on GitHub</span></a>
+	</div>
+</header>
+
+
+
+				
+				<!-- 内容部分 -->
+				<div class="content">
+
+					<h1>Java基本数据类型（分类：Java基础）</h1>
+					<p class="copyright">（微信[a997247716] 版权所有-陈润基,转载请注明来处）</p>
+					<section class="downloads clearfix back_to_index">
+						<a href="http://localhost:4000/index.html" id="back-to-index" class="button"><span>&lt;&lt; Back</span></a>
+					</section>
+					<h5>前言：Java很多基础知识，过了太久都忘得差不多了，现在定时记录一些Java基础。</h5>
+<br>
+<br>
+内容导航
+<ul>
+<li>1.基本数据类型有哪些？</li>
+<li>2.具体大小和范围？</li>
+<li>3.基本数据类型与对应封装类的区别？</li>
+</ul>
+
+
+<br>
+
+<h3>1.基本数据类型有哪些？</h3>
+<p>Java有9种基本数据类型，String并不包含在内，void的话有点争议，这里我先归进去，但是后面的探讨不包括void。下面是他们的大小，默认值，对应的封装类，值得注意的是，0.0d可以省略写成0.0（0.0默认代表0.0d）
+但是0.0f不能省略。
+</p>
+<img src="http://localhost:4000/img/18-01-15.01.png"/>
+<br>
+
+<h3>2.具体大小和范围？</h3>
+<p>byte，short，int，long，char数据类型的取值范围只需要记得他是占几位，几个字节，有无正负，然后联想记忆即可。
+下面以byte为例，说明如何联想记忆。</p>
+<ul>
+<p>01.记住：byte 占1字节，8位，有正和负</p>
+<p>02.联想：首先，byte占8位，取值范围为2^8。其次，因为有正和负，正负各得2^7。再者，因为中间有个0，所以正的减1。最终，得出取值范围 -(2^7)～ 0 ～(2^7-1)</p>
+<p>03.联想结果：-128 ～ 127 </p>
+<p>boolean类型只有两个取值：true 和 false。单个的boolean类型变量在编译的时候是使用的int类型，占4个字节，而如果在数组中使用则占1个字节。</p>
+<p>float数据类型是单精度、32位、符合IEEE 754标准的浮点数，范围为 -3.4*10^(-38)～3.4*10^(38)。</p>
+<p>double 数据类型是双精度、64 位、符合IEEE 754标准的浮点数，范围为 -1.7*10^(-308)～1.7*10^(308)。</p>
+<p>拓展阅读：<a href ="https://baike.baidu.com/item/IEEE%20754/3869922?fromtitle=IEEE754%E6%A0%87%E5%87%86&fromid=10427270" target="_blank">IEEE 754标准</a></p>
+<p>最后说一下，懒得记的话也可以在Java编程中使用XX.MIN_VALUE，XX.MAX_VALUE来获取范围（XX就是基本数据类型的名称，比如Byte，Short...）。</p>
+<br>
+
+<h3>3.基本数据类型与对应封装类的区别？</h3>
+<p>（1）基本类型声明变量赋值后直接存储值，是放在栈中，所占的存储空间是不变的。而封装类创建的是一个对象，存放于堆内存中。
+</p>
+<p>（2）不同基本类型的默认值有的相同有的不同，而不同封装类的默认值都为null，所以要注意NPE错误。同时也要注意类型匹配问题（比如使用mybaits从数据库读数据，如果数据库该字段数据为空，使用long作为返回类型会报错，使用Long则不会）。
+</p>
+<br>
+
+<p>本文参考资料：<a href="http://www.runoob.com/java/java-basic-datatypes.html" target="_blank">菜鸟教程Java 基本数据类型</a></p>
+<br>
+<br>
+<h5>结语：睡觉啦（被窝玩手机）！！</h5>
+
+<br>
+<br>
+<h5>以上</h5>
+
+
+
+					<p class="author_date">发表于: 15 Jan 2018</p>
+
+				</div>
+				
+
+				<!-- 引用底部代码部分 -->
+				<footer>
+	<!-- <a href="http://yubiaobin.github.com/">返回首页</a> -->
+	<span>2018@陈润基</span>
+	
+	
+<!-- 
+	<script type="text/javascript">
+	var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+	document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3F7cfeeba2e3844f06b817b0b2cb423ce9' type='text/javascript'%3E%3C/script%3E"));
+	</script>
+-->
+	
+	<script>
+	var _hmt = _hmt || [];
+	(function() {
+	  var hm = document.createElement("script");
+	  hm.src = "https://hm.baidu.com/hm.js?ce5ca43ae7600468de9500d5cdca5f2b";
+	  var s = document.getElementsByTagName("script")[0]; 
+	  s.parentNode.insertBefore(hm, s);
+	})();
+	</script>
+
+</footer>
+
+
+
+			</div>
+		</div>
+　　 </body>
+</html>

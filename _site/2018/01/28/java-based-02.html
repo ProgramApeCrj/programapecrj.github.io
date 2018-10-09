@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="keywords" content="crj">
+		<meta name="description" content="crj。">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Java的访问控制修饰符【上：修饰办法】（分类：Java基础）</title>
+		<link rel="icon" href="/img/favicon.ico" type="image/x-icon"/>
+		<link rel="shortcut icon" href="/img/favicon.ico" type="image/x-icon"/>
+		<link href="/css/layout.css" rel="stylesheet" media="screen">
+		<!-- <link href="/css/pygment_trac.css" rel="stylesheet" media="screen">-->
+　　 </head>
+　　 <body>
+		<div id="container">
+	       <div class="inner">
+				<!-- 引用头部代码部分 -->
+				<header>
+	<h1>ProgramApeCrj 's Blog</h1>
+    <h2><a href="http://programapecrj.github.io" target="_blank" class="header_jekyll">--  a small notebook</a></h2>
+    <div id="downloads" class="clearfix">
+		<a href="https://github.com/ProgramApeCrj/programapecrj.github.io/" id="view-on-github" target="_blank" class="button"><span>View on GitHub</span></a>
+	</div>
+</header>
+
+
+
+				
+				<!-- 内容部分 -->
+				<div class="content">
+
+					<h1>Java的访问控制修饰符【上：修饰办法】（分类：Java基础）</h1>
+					<p class="copyright">（微信[a997247716] 版权所有-陈润基,转载请注明来处）</p>
+					<section class="downloads clearfix back_to_index">
+						<a href="http://localhost:4000/index.html" id="back-to-index" class="button"><span>&lt;&lt; Back</span></a>
+					</section>
+					<h5>前言：网上对Java访问控制修饰符，总结得有点混乱，因为访问控制修饰符可以修饰类、成员属性、办法....这些虽然有一些相似之处，却不能一概而论，如果分开总结能更好记忆理解，下面我们先总结修饰办法的情景。</h5>
+<br>
+<br>
+内容导航
+<ul>
+<li>1.需要知道的前提知识</li>
+<li>2.修饰符default</li>
+<li>3.修饰符private</li>
+<li>4.修饰符protected</li>
+<li>5.修饰符public</li>
+<li>6.总结</li>
+</ul>
+
+
+<br>
+
+<h3>1.需要知道的前提知识</h3>
+<p>首先，当修饰符用来修饰一个类的办法时，我们必须从2个地方去讨论一个办法被修饰后的变化：</p>
+
+<p>---01.修饰后，该办法是否能够被类的实例对象访问。</p>
+<p>---02.修饰后，该办法是否能被它的继承者重写。</p>
+
+<p>其次，子类如果重写父类办法,重写时的访问修饰符也是有规定的，如下图所示：</p>
+
+<img width="100%" 
+src="http://p2pko6fd6.bkt.clouddn.com/18-01-28-01.png" />
+
+<p>下面开始逐个修饰符解析</p>
+
+<br>
+
+<h3>2.修饰符default</h3>
+<p>
+证明:
+当一个办法没有写访问控制修饰符(即default)，该办法:</p>
+<p>01.能够被类外部的实例访问到。</p>
+<p>02.能被子类重写。</p>
+<p>03.如果不是同一个包下,上面两个结论都不成立。(即无法访问,无法重写)</p>
+
+<p>下面只给出证明同个包下的代码(不同包请自行测试):</p>
+
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby">    <span class="k">class</span> <span class="nc">Father</span> <span class="p">{</span>
+	    <span class="n">void</span> <span class="n">methodOne</span><span class="p">()</span> <span class="p">{</span>
+			<span class="no">System</span><span class="p">.</span><span class="nf">out</span><span class="p">.</span><span class="nf">println</span><span class="p">(</span><span class="s2">"我是父类的defalut办法"</span><span class="p">);</span>
+	    <span class="p">}</span>
+   <span class="p">}</span>
+
+   <span class="k">class</span> <span class="nc">Son</span> <span class="n">extends</span> <span class="no">Father</span> <span class="p">{</span>
+	    <span class="n">void</span> <span class="n">methodOne</span><span class="p">()</span> <span class="p">{</span>
+			<span class="no">System</span><span class="p">.</span><span class="nf">out</span><span class="p">.</span><span class="nf">println</span><span class="p">(</span><span class="s2">"我是重写了的子类的defalut办法"</span><span class="p">);</span>
+	    <span class="p">}</span>
+  <span class="p">}</span>
+
+  <span class="kp">public</span> <span class="k">class</span> <span class="nc">Test</span> <span class="p">{</span>
+	    <span class="kp">public</span> <span class="n">static</span> <span class="n">void</span> <span class="n">main</span><span class="p">(</span><span class="no">String</span><span class="p">[]</span> <span class="n">args</span><span class="p">)</span> <span class="p">{</span>
+			<span class="no">Father</span> <span class="n">f</span> <span class="o">=</span> <span class="n">new</span> <span class="no">Son</span><span class="p">();</span>
+			<span class="n">f</span><span class="p">.</span><span class="nf">methodOne</span><span class="p">();</span>  
+	    <span class="p">}</span>
+  <span class="p">}</span></code></pre></figure>
+
+<p>输出结果：</p>
+<pre>
+我是重写了的子类的defalut办法
+</pre>
+
+<h4>总结:同一个包下，类的实例对象能够访问default修饰的办法，并且子类能够重写父类的办法，而不同包下经过测试，前面两个证明都不成立。</h4>
+
+<br>
+
+<h3>3.修饰符private</h3>
+<p>
+证明:
+当一个办法的问控制修饰符为private ,该办法:</p>
+<p>01.无法被类外部的实例对象访问到。</p>
+<p>02.对于子类来说就像不存在,无法重写。</p>
+<p>03.子类可以拥有一个相同名称的办法，但是，这个办法不能算重写的办法,
+而是属于子类全新的办法。(父类只有向下转型为子类才能访问得到子类这个全新的办法)</h4>
+
+<p>下面是证明的代码:</p>
+
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">Father</span> <span class="p">{</span>
+    <span class="kp">private</span> <span class="n">void</span> <span class="n">methodOne</span><span class="p">()</span> <span class="p">{</span>
+        <span class="no">System</span><span class="p">.</span><span class="nf">out</span><span class="p">.</span><span class="nf">println</span><span class="p">(</span><span class="s2">"我是父类的methodOne办法"</span><span class="p">);</span>
+    <span class="p">}</span>
+    
+    <span class="n">void</span> <span class="n">methodTwo</span><span class="p">()</span> <span class="p">{</span>
+        <span class="no">System</span><span class="p">.</span><span class="nf">out</span><span class="p">.</span><span class="nf">println</span><span class="p">(</span><span class="s2">"我是父类的methodTwo办法"</span><span class="p">);</span>
+    <span class="p">}</span>
+    
+    <span class="n">void</span> <span class="n">methodThrid</span><span class="p">()</span> <span class="p">{</span>
+        <span class="no">System</span><span class="p">.</span><span class="nf">out</span><span class="p">.</span><span class="nf">println</span><span class="p">(</span><span class="s2">"尝试调用子类重写的methodOne和methodTwo办法"</span><span class="p">);</span>
+        <span class="n">methodOne</span><span class="p">();</span>
+        <span class="n">methodTwo</span><span class="p">();</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">class</span> <span class="nc">Son</span> <span class="n">extends</span> <span class="no">Father</span> <span class="p">{</span>
+    <span class="n">void</span> <span class="n">methodOne</span><span class="p">()</span> <span class="p">{</span>
+        <span class="no">System</span><span class="p">.</span><span class="nf">out</span><span class="p">.</span><span class="nf">println</span><span class="p">(</span><span class="s2">"因为父类是private,所以我无法重写,我是一个全新的办法"</span><span class="p">);</span>
+    <span class="p">}</span>
+    
+    <span class="n">void</span> <span class="n">methodTwo</span><span class="p">()</span> <span class="p">{</span>
+        <span class="no">System</span><span class="p">.</span><span class="nf">out</span><span class="p">.</span><span class="nf">println</span><span class="p">(</span><span class="s2">"我是子类重写的methodTwo"</span><span class="p">);</span>
+    <span class="p">}</span>
+    
+<span class="p">}</span>
+
+<span class="kp">public</span> <span class="k">class</span> <span class="nc">Test</span> <span class="p">{</span>
+    <span class="kp">public</span> <span class="n">static</span> <span class="n">void</span> <span class="n">main</span><span class="p">(</span><span class="no">String</span><span class="p">[]</span> <span class="n">args</span><span class="p">)</span> <span class="n">throws</span> <span class="no">Exception</span> <span class="p">{</span>
+        
+        <span class="no">Father</span> <span class="n">f</span> <span class="o">=</span> <span class="n">new</span> <span class="no">Son</span><span class="p">();</span>
+        <span class="sr">//</span><span class="n">f</span><span class="p">.</span><span class="nf">methodOne</span><span class="p">();</span> <span class="sr">//me</span><span class="n">thodOne</span><span class="err">无法访问</span><span class="p">,</span><span class="err">因为是</span><span class="kp">private</span>
+        <span class="n">f</span><span class="p">.</span><span class="nf">methodThrid</span><span class="p">();</span>
+        
+        <span class="no">System</span><span class="p">.</span><span class="nf">out</span><span class="p">.</span><span class="nf">println</span><span class="p">(</span><span class="s2">"-----分割线----"</span><span class="p">);</span>
+        
+        <span class="sr">//</span><span class="err">父类向下转型为子类</span><span class="p">,</span><span class="err">才能访问到子类的全新办法</span>
+        <span class="no">Son</span> <span class="n">fToS</span> <span class="o">=</span> <span class="p">(</span><span class="no">Son</span><span class="p">)</span><span class="n">f</span><span class="p">;</span>
+        <span class="n">fToS</span><span class="p">.</span><span class="nf">methodOne</span><span class="p">();</span>
+        
+    <span class="p">}</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>输出结果：</p>
+<pre>
+尝试调用子类重写的methodOne和methodTwo办法
+我是父类的methodOne办法
+我是子类重写的methodTwo
+-----分割线----
+因为父类是private,所以我无法重写,我是一个全新的办法
+</pre>
+
+<h4>总结:private修饰的办法完全对外，对子类隐形，无法被重写和被调用。
+另外，子类拓展的新办法，父类实例对象无法访问，只有子类的实例对象才能访问到.</h4>
+
+<br>
+
+<h3>4.修饰符protected </h3>
+
+<p>
+证明:   
+当一个办法的访问控制修饰符为protected,该办法:</p>
+<p>01.该办法能够被类的实例访问到,
+但有一点例外:如果不是同个包,类的实例对象不能访问protected办法。
+</p>
+<p>02.该办法能够被子类重写,无论子类在不在同个包,都能覆盖重写。</p>
+
+<p>下面只给出证明同个包下的代码(不同包请自行测试):</p>
+
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">Father</span> <span class="p">{</span>
+    <span class="kp">protected</span> <span class="n">void</span> <span class="n">methodOne</span><span class="p">()</span> <span class="p">{</span>
+        <span class="no">System</span><span class="p">.</span><span class="nf">out</span><span class="p">.</span><span class="nf">println</span><span class="p">(</span><span class="s2">"我是父类的protected办法"</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">class</span> <span class="nc">Son</span> <span class="n">extends</span> <span class="no">Father</span> <span class="p">{</span>
+    <span class="kp">protected</span> <span class="n">void</span> <span class="n">methodOne</span><span class="p">()</span> <span class="p">{</span>
+        <span class="no">System</span><span class="p">.</span><span class="nf">out</span><span class="p">.</span><span class="nf">println</span><span class="p">(</span><span class="s2">"我是重写了的子类的protected办法"</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kp">public</span> <span class="k">class</span> <span class="nc">Test</span> <span class="p">{</span>
+    <span class="kp">public</span> <span class="n">static</span> <span class="n">void</span> <span class="n">main</span><span class="p">(</span><span class="no">String</span><span class="p">[]</span> <span class="n">args</span><span class="p">)</span> <span class="p">{</span>
+        <span class="no">Father</span> <span class="n">f</span> <span class="o">=</span> <span class="n">new</span> <span class="no">Son</span><span class="p">();</span>
+        <span class="n">f</span><span class="p">.</span><span class="nf">methodOne</span><span class="p">();</span>  
+    <span class="p">}</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>输出结果：</p>
+<pre>
+我是重写了的子类的protected办法
+</pre>
+
+<h4>总结:同个包下，protected修饰的办法能被实例访问，能被子类重写。而经过测试，其他包下的实例无法访问protected修饰的办法，但是其他包下的子类可以重写父类的protected办法（与default不同之处）。</h4>
+<br>
+
+
+<h3>5.修饰符public</h3>
+<p>
+证明:
+当一个办法的问控制修饰符为public,该办法:</p>
+<p>01.任何地方,无论同个包不同个包,实例都能访问到。</p>
+<p>02.任何地方,无论同个包不同个包,子类可以继承重写。</p>
+
+
+<p>下面只给出证明同个包下的代码(不同包请自行测试):</p>
+
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">Father</span> <span class="p">{</span>
+   
+    <span class="kp">public</span> <span class="n">void</span> <span class="n">methodOne</span><span class="p">()</span> <span class="p">{</span>
+        <span class="no">System</span><span class="p">.</span><span class="nf">out</span><span class="p">.</span><span class="nf">println</span><span class="p">(</span><span class="s2">"我是父类的public办法"</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">class</span> <span class="nc">Son</span> <span class="n">extends</span> <span class="no">Father</span> <span class="p">{</span>
+    <span class="kp">public</span> <span class="n">void</span> <span class="n">methodOne</span><span class="p">()</span> <span class="p">{</span>
+        <span class="no">System</span><span class="p">.</span><span class="nf">out</span><span class="p">.</span><span class="nf">println</span><span class="p">(</span><span class="s2">"我是重写了的子类的public办法"</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kp">public</span> <span class="k">class</span> <span class="nc">Test</span> <span class="p">{</span>
+    <span class="kp">public</span> <span class="n">static</span> <span class="n">void</span> <span class="n">main</span><span class="p">(</span><span class="no">String</span><span class="p">[]</span> <span class="n">args</span><span class="p">)</span> <span class="p">{</span>
+        <span class="no">Father</span> <span class="n">f</span> <span class="o">=</span> <span class="n">new</span> <span class="no">Son</span><span class="p">();</span>
+        <span class="n">f</span><span class="p">.</span><span class="nf">methodOne</span><span class="p">();</span>  
+    <span class="p">}</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>输出结果：</p>
+<pre>
+我是重写了的子类的public办法
+</pre>
+
+<h4>总结:public 的权限最大，只需要记住全部都是可以可以可以可以！！</h4>
+
+<br>
+
+
+<h3>6.总结</h3>
+<p>上面是部分证明过程，如果不想自己操作，又不想记住长长的结论，那直接保存下面两张图即可：</p>
+<p>01.办法的调用：<p>
+<img width="100%" 
+src="http://p2pko6fd6.bkt.clouddn.com/18-01-28-02.png" />
+<p>02.办法的重写：<p>
+<img width="100%" 
+src="http://p2pko6fd6.bkt.clouddn.com/18-01-28-03.png" />
+
+
+<br>
+<br>
+<h5>结语：这样就清晰明了许多了，
+接下来可以写访问控制修饰符去修饰类，修饰属性，甚至是修饰内部类的场景咯.....</h5>
+
+<br>
+<br>
+<h5>以上</h5>
+
+
+
+					<p class="author_date">发表于: 28 Jan 2018</p>
+
+				</div>
+				
+
+				<!-- 引用底部代码部分 -->
+				<footer>
+	<!-- <a href="http://yubiaobin.github.com/">返回首页</a> -->
+	<span>2018@陈润基</span>
+	
+	
+<!-- 
+	<script type="text/javascript">
+	var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+	document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3F7cfeeba2e3844f06b817b0b2cb423ce9' type='text/javascript'%3E%3C/script%3E"));
+	</script>
+-->
+	
+	<script>
+	var _hmt = _hmt || [];
+	(function() {
+	  var hm = document.createElement("script");
+	  hm.src = "https://hm.baidu.com/hm.js?ce5ca43ae7600468de9500d5cdca5f2b";
+	  var s = document.getElementsByTagName("script")[0]; 
+	  s.parentNode.insertBefore(hm, s);
+	})();
+	</script>
+
+</footer>
+
+
+
+			</div>
+		</div>
+　　 </body>
+</html>

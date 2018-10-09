@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="keywords" content="crj">
+		<meta name="description" content="crj。">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Java的访问控制修饰符【下：修饰属性】（分类：Java基础）</title>
+		<link rel="icon" href="/img/favicon.ico" type="image/x-icon"/>
+		<link rel="shortcut icon" href="/img/favicon.ico" type="image/x-icon"/>
+		<link href="/css/layout.css" rel="stylesheet" media="screen">
+		<!-- <link href="/css/pygment_trac.css" rel="stylesheet" media="screen">-->
+　　 </head>
+　　 <body>
+		<div id="container">
+	       <div class="inner">
+				<!-- 引用头部代码部分 -->
+				<header>
+	<h1>ProgramApeCrj 's Blog</h1>
+    <h2><a href="http://programapecrj.github.io" target="_blank" class="header_jekyll">--  a small notebook</a></h2>
+    <div id="downloads" class="clearfix">
+		<a href="https://github.com/ProgramApeCrj/programapecrj.github.io/" id="view-on-github" target="_blank" class="button"><span>View on GitHub</span></a>
+	</div>
+</header>
+
+
+
+				
+				<!-- 内容部分 -->
+				<div class="content">
+
+					<h1>Java的访问控制修饰符【下：修饰属性】（分类：Java基础）</h1>
+					<p class="copyright">（微信[a997247716] 版权所有-陈润基,转载请注明来处）</p>
+					<section class="downloads clearfix back_to_index">
+						<a href="http://localhost:4000/index.html" id="back-to-index" class="button"><span>&lt;&lt; Back</span></a>
+					</section>
+					<h5>前言：上次两篇博文写了修饰办法和修饰类，就缺修饰属性了。</h5>
+<br>
+<br>
+内容导航
+<ul>
+<li>1.需要知道的前提知识</li>
+<li>2.修饰符private</li>
+<li>3.修饰符protected</li>
+<li>4.修饰符public</li>
+<li>5.修饰符default</li>
+<li>6.总结</li>
+</ul>
+
+
+<br>
+
+<h3>1.需要知道的前提知识？</h3>
+<p>首先，当修饰符用来修饰一个属性时，我们一般从两个地方去讨论一个属性被修饰后的变化：</p>
+<p>---01.修饰后，该属性是否能够被类外部的实例对象访问。</p>
+<p>---02.修饰后，该属性是否能被它的继承者访问到。</p>
+
+<p>值得注意的是，属性不用讨论覆盖成功与否，
+如果子类重写了属性，但是没有重写办法，最终访问的还是父类的属性。任意修饰符都一样,下面以pubulic为例：</p>
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">Father</span> <span class="p">{</span> 
+    <span class="kp">public</span> <span class="no">String</span> <span class="n">str</span> <span class="o">=</span> <span class="s2">"father"</span><span class="p">;</span>
+    <span class="n">void</span> <span class="nb">print</span><span class="p">()</span> <span class="p">{</span>
+        <span class="no">System</span><span class="p">.</span><span class="nf">out</span><span class="p">.</span><span class="nf">println</span><span class="p">(</span><span class="s2">"父类办法调用str="</span><span class="o">+</span><span class="n">str</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">class</span> <span class="nc">Son</span> <span class="n">extends</span> <span class="no">Father</span> <span class="p">{</span> 
+    <span class="kp">public</span> <span class="no">String</span> <span class="n">str</span> <span class="o">=</span> <span class="s2">"Son"</span><span class="p">;</span>
+    <span class="n">void</span> <span class="nb">print</span><span class="p">()</span> <span class="p">{</span>
+        <span class="no">System</span><span class="p">.</span><span class="nf">out</span><span class="p">.</span><span class="nf">println</span><span class="p">(</span><span class="s2">"Son子类办法调用str="</span><span class="o">+</span><span class="n">str</span><span class="p">);</span> <span class="sr">//</span><span class="err">子类调用自己的</span><span class="n">str</span>
+     <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">class</span> <span class="nc">Son2</span> <span class="n">extends</span> <span class="no">Father</span> <span class="p">{</span>
+    <span class="kp">public</span> <span class="no">String</span> <span class="n">str</span> <span class="o">=</span> <span class="s2">"Son2"</span><span class="p">;</span><span class="sr">//</span><span class="err">子类不会覆盖父类的</span><span class="n">str</span><span class="err">，</span><span class="nb">print</span><span class="p">()</span><span class="err">办法还是调用父类的</span><span class="n">str</span>
+<span class="p">}</span>
+
+<span class="kp">public</span> <span class="k">class</span> <span class="nc">Test</span> <span class="p">{</span>       
+    <span class="kp">public</span> <span class="n">static</span> <span class="n">void</span> <span class="n">main</span><span class="p">(</span><span class="no">String</span><span class="p">[]</span> <span class="n">args</span><span class="p">)</span> <span class="p">{</span>
+        <span class="no">Father</span> <span class="n">f</span> <span class="o">=</span> <span class="n">new</span> <span class="no">Son</span><span class="p">();</span>
+        <span class="n">f</span><span class="p">.</span><span class="nf">print</span><span class="p">();</span>
+        
+        <span class="no">Father</span> <span class="n">f2</span> <span class="o">=</span> <span class="n">new</span> <span class="no">Son2</span><span class="p">();</span>
+        <span class="n">f2</span><span class="p">.</span><span class="nf">print</span><span class="p">();</span>
+    <span class="p">}</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>输出结果：</p>
+<pre>
+Son子类办法调用str=Son
+父类办法调用str=father
+</pre>
+<br>
+
+<h3>2.修饰符private</h3>
+<p>对于private定义的属性:</p>
+<p>01.外部实例对象无法访问到</p>
+<p>02.子类无法访问</p>
+<br>
+<img width="100%" 
+src="http://p2pko6fd6.bkt.clouddn.com/18-02-22@01.png" />
+<br>
+
+<h3>3.修饰符protected</h3>
+<p>对于protected定义的属性:</p>
+<p>01.外部实例对象能够访问到(不同包不行)</p>
+<p>02.子类能够访问到(不同包可以)</p>
+<br>
+<img width="100%" 
+src="http://p2pko6fd6.bkt.clouddn.com/18-02-22@02.png" />
+<br>
+
+<h3>4.修饰符public</h3>
+<p>对于public定义的属性:</p>
+<p>01.外部实例对象能够访问到(不同包也可以)</p>
+<p>02.子类能够访问到(不同包也可以)</p>
+<br>
+<img width="100%" 
+src="http://p2pko6fd6.bkt.clouddn.com/18-02-22@03.png" />
+<br>
+
+<h3>5.修饰符default</h3>
+<p>对于default定义的属性:</p>
+<p>01.外部实例对象能够访问到(不同包不行)</p>
+<p>02.子类能够访问到(不同包不行)</p>
+<br>
+<img width="100%" 
+src="http://p2pko6fd6.bkt.clouddn.com/18-02-22@04.png" />
+<br>
+
+
+<h3>6.总结</h3>
+<p>看完推论看总结，依旧是两张图。</p>
+<p>01.类外部实例访问属性时：</p>
+<br>
+<img width="100%" 
+src="http://p2pko6fd6.bkt.clouddn.com/18-02-22@05.png" />
+
+<p>02.子类内部访问父类属性：</p>
+<img width="100%" 
+src="http://p2pko6fd6.bkt.clouddn.com/18-02-22@06.png" />
+
+<br>
+<br>
+<h5>结语：这样一来，Java的访问控制修饰符就清楚明白了，无论修饰类，办法，还是属性，都一目了然了。以后理解内部类的时候，
+再理解访问修饰符去修饰内部类，内部类属性，内部类办法的情况。顺带理解为什么需要定义不同权限，分别用于什么场景等等．．．</h5>
+
+<br>
+<br>
+<h5>以上</h5>
+
+
+
+					<p class="author_date">发表于: 22 Feb 2018</p>
+
+				</div>
+				
+
+				<!-- 引用底部代码部分 -->
+				<footer>
+	<!-- <a href="http://yubiaobin.github.com/">返回首页</a> -->
+	<span>2018@陈润基</span>
+	
+	
+<!-- 
+	<script type="text/javascript">
+	var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+	document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3F7cfeeba2e3844f06b817b0b2cb423ce9' type='text/javascript'%3E%3C/script%3E"));
+	</script>
+-->
+	
+	<script>
+	var _hmt = _hmt || [];
+	(function() {
+	  var hm = document.createElement("script");
+	  hm.src = "https://hm.baidu.com/hm.js?ce5ca43ae7600468de9500d5cdca5f2b";
+	  var s = document.getElementsByTagName("script")[0]; 
+	  s.parentNode.insertBefore(hm, s);
+	})();
+	</script>
+
+</footer>
+
+
+
+			</div>
+		</div>
+　　 </body>
+</html>

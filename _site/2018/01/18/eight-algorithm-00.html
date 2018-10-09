@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="keywords" content="crj">
+		<meta name="description" content="crj。">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>用Java学八大算法的前置条件（分类：八大算法）</title>
+		<link rel="icon" href="/img/favicon.ico" type="image/x-icon"/>
+		<link rel="shortcut icon" href="/img/favicon.ico" type="image/x-icon"/>
+		<link href="/css/layout.css" rel="stylesheet" media="screen">
+		<!-- <link href="/css/pygment_trac.css" rel="stylesheet" media="screen">-->
+　　 </head>
+　　 <body>
+		<div id="container">
+	       <div class="inner">
+				<!-- 引用头部代码部分 -->
+				<header>
+	<h1>ProgramApeCrj 's Blog</h1>
+    <h2><a href="http://programapecrj.github.io" target="_blank" class="header_jekyll">--  a small notebook</a></h2>
+    <div id="downloads" class="clearfix">
+		<a href="https://github.com/ProgramApeCrj/programapecrj.github.io/" id="view-on-github" target="_blank" class="button"><span>View on GitHub</span></a>
+	</div>
+</header>
+
+
+
+				
+				<!-- 内容部分 -->
+				<div class="content">
+
+					<h1>用Java学八大算法的前置条件（分类：八大算法）</h1>
+					<p class="copyright">（微信[a997247716] 版权所有-陈润基,转载请注明来处）</p>
+					<section class="downloads clearfix back_to_index">
+						<a href="http://localhost:4000/index.html" id="back-to-index" class="button"><span>&lt;&lt; Back</span></a>
+					</section>
+					<h5>前言：算法算法，真滴难，从今天起，决定再学一遍八大算法，用Java写，与c或者c++写的逻辑是一样的，只不过有些许不同地方要注意。现在就讲讲使用Java语音学习八大算法有哪些前置条件，或者说要了解哪些东西，学起来更容易。</h5>
+<br>
+<br>
+内容导航
+<ul>
+<li>1.八大算法包括哪些?</li>
+<li>2.要涉及的理念？</li>
+<li>3.可以重复利用的工具办法？</li>
+</ul>
+
+
+<br>
+
+<h3>1.八大算法包括哪些?</h3>
+<p>如下图内部排序所示：
+</p>
+
+<img width="100%" 
+src="http://p2pko6fd6.bkt.clouddn.com/18-01-18.01.png" />
+
+<br>
+
+<h3>2.要涉及的理念？</h3>
+<h4>01.稳定性</h4>
+<p>通俗地讲呢，就是能保证2个相等的数，在排序后，它们的前后顺序和排序前相同。例如:如果 a[ i ] = a[ j ], a[ i ] 原来在 a[ j ] 前，排序后 a[ i ] 还是要在 a[ j ] 位置前。</p>
+<p>为什么要这样呢？举个简单的例子，比如有一批客户订单，已经按购买时间排好序了。但是现在你打算先按价格进行排序，把价格一样的归在一起，然后再按时间先后发货。这时候，如果你写的算法是稳定的，那么排序后价格一样的在一起，但是它们仍然是按照购买时间先后的顺序。</p>
+<p>由此可知道稳定性的意义所在 : 两个值虽然相同,但是它们的顺序是有意义的,稳定的算法能保证排序后不改变原来先后顺序，保留原来的意义。</p>
+<br>
+
+<h4>02.时间和空间复杂度</h4>
+<p>这里就不展开了，给个链接：<a href="https://baike.baidu.com/item/%E6%97%B6%E9%97%B4%E5%A4%8D%E6%9D%82%E5%BA%A6" target="_blank">百度百科：时间复杂度</a>
+<a href="https://baike.baidu.com/item/%E7%A9%BA%E9%97%B4%E5%A4%8D%E6%9D%82%E5%BA%A6" target="_blank">百度百科：空间复杂度</a>
+</p>
+<br>
+
+<h4>03.Comparable接口</h4>
+<p>因为我们想用Java写，所以要理解一下这个Java接口，下面我们的工具类也会用到这个接口。</p>
+<br>
+
+
+<h3>3.可以重复利用的工具办法？</h3>
+<h4>less:判断第一个值是否小于第二个值</h4>
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby">    <span class="kp">public</span> <span class="n">static</span> <span class="n">boolean</span> <span class="n">less</span><span class="p">(</span><span class="no">Comparable</span> <span class="n">v</span><span class="p">,</span> <span class="no">Comparable</span> <span class="n">w</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="n">v</span><span class="p">.</span><span class="nf">compareTo</span><span class="p">(</span><span class="n">w</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="p">}</span></code></pre></figure>
+<br>
+
+<h4>exch:交换两个值的位置</h4>
+<p>之所以写成下面那样，是因为Java里面没有指针的概念，不能说我传某个数组中的两个值到办法里修改，只能传数组引用和两个值的下标。如果不明白，需要理解Java中值传递和引用传递的基础知识。</p>
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby">    <span class="kp">public</span> <span class="n">static</span> <span class="n">void</span> <span class="n">exch</span><span class="p">(</span><span class="no">Comparable</span><span class="p">[]</span> <span class="n">a</span><span class="p">,</span> <span class="n">int</span> <span class="n">i</span><span class="p">,</span> <span class="n">int</span> <span class="n">j</span><span class="p">)</span> <span class="p">{</span>
+        <span class="no">Comparable</span> <span class="n">t</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+        <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="n">j</span><span class="p">];</span>
+        <span class="n">a</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">t</span><span class="p">;</span>
+    <span class="p">}</span></code></pre></figure>
+<br>
+
+<h4>show:打印某次排序后的数组内容</h4>
+<p>用于生成动态的效果，方便理解算法。</p>
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby">    <span class="kp">public</span> <span class="n">static</span> <span class="n">void</span> <span class="n">show</span><span class="p">(</span><span class="no">Comparable</span><span class="p">[]</span> <span class="n">a</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">for</span><span class="p">(</span><span class="n">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span><span class="o">&lt;</span> <span class="n">a</span><span class="p">.</span><span class="nf">length</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">){</span>
+            <span class="no">System</span><span class="p">.</span><span class="nf">out</span><span class="p">.</span><span class="nf">print</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">+</span><span class="s2">" "</span><span class="p">);</span>
+        <span class="p">}</span>
+        <span class="no">System</span><span class="p">.</span><span class="nf">out</span><span class="p">.</span><span class="nf">println</span><span class="p">(</span><span class="s2">""</span><span class="p">);</span>
+    <span class="p">}</span></code></pre></figure>
+<br>
+
+<h4>isSorted:判断一个数组是否有序</h4>
+<p>这个没上面那三个那么重要，可以写也可以不写。</p>
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby">    <span class="kp">public</span> <span class="n">static</span> <span class="n">boolean</span> <span class="n">isSorted</span><span class="p">(</span><span class="no">Comparable</span><span class="p">[]</span> <span class="n">a</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">for</span><span class="p">(</span><span class="n">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="n">i</span><span class="o">&lt;</span> <span class="n">a</span><span class="p">.</span><span class="nf">length</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">){</span>
+            <span class="k">if</span><span class="p">(</span><span class="n">less</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span> <span class="p">{</span>
+                <span class="k">return</span> <span class="kp">false</span><span class="p">;</span>
+            <span class="p">}</span>  
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="kp">true</span><span class="p">;</span>
+    <span class="p">}</span></code></pre></figure>
+<br>
+
+<h4>将上面的内容放在一个SortUtil中</h4>
+<pre>
+public class SortUtil {
+    public static boolean less(Comparable v, Comparable w) {
+        return v.compareTo(w) < 0;
+    }
+    
+    public static void exch(Comparable[] a, int i, int j) {
+        Comparable t = a[i];
+        a[i] = a[j];
+        a[j] = t;
+    }
+                
+    public static void show(Comparable[] a) {
+        for(int i = 0; i< a.length; i++){
+            System.out.print(a[i]+" ");
+        }
+        System.out.println("");
+    }
+    
+    public static boolean isSorted(Comparable[] a) {
+        for(int i = 1; i< a.length; i++){
+         
+            if(less(a[i], a[i-1])) {
+                return false;
+            }
+            
+        }
+        return true;
+    }
+}
+</pre>
+<br>
+
+<h5>结语：这些就是使用Java语言学习八大算法的基本要求了，磨刀不误砍柴工嘛，先理解上面的内容，接下来学习算法也能更加容易。</h5>
+
+<br>
+<br>
+<h5>以上</h5>
+
+
+
+					<p class="author_date">发表于: 18 Jan 2018</p>
+
+				</div>
+				
+
+				<!-- 引用底部代码部分 -->
+				<footer>
+	<!-- <a href="http://yubiaobin.github.com/">返回首页</a> -->
+	<span>2018@陈润基</span>
+	
+	
+<!-- 
+	<script type="text/javascript">
+	var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+	document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3F7cfeeba2e3844f06b817b0b2cb423ce9' type='text/javascript'%3E%3C/script%3E"));
+	</script>
+-->
+	
+	<script>
+	var _hmt = _hmt || [];
+	(function() {
+	  var hm = document.createElement("script");
+	  hm.src = "https://hm.baidu.com/hm.js?ce5ca43ae7600468de9500d5cdca5f2b";
+	  var s = document.getElementsByTagName("script")[0]; 
+	  s.parentNode.insertBefore(hm, s);
+	})();
+	</script>
+
+</footer>
+
+
+
+			</div>
+		</div>
+　　 </body>
+</html>

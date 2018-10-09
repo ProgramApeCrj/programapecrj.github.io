@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="keywords" content="crj">
+		<meta name="description" content="crj。">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>直接插入排序【上：图解理论】（分类：八大算法）</title>
+		<link rel="icon" href="/img/favicon.ico" type="image/x-icon"/>
+		<link rel="shortcut icon" href="/img/favicon.ico" type="image/x-icon"/>
+		<link href="/css/layout.css" rel="stylesheet" media="screen">
+		<!-- <link href="/css/pygment_trac.css" rel="stylesheet" media="screen">-->
+　　 </head>
+　　 <body>
+		<div id="container">
+	       <div class="inner">
+				<!-- 引用头部代码部分 -->
+				<header>
+	<h1>ProgramApeCrj 's Blog</h1>
+    <h2><a href="http://programapecrj.github.io" target="_blank" class="header_jekyll">--  a small notebook</a></h2>
+    <div id="downloads" class="clearfix">
+		<a href="https://github.com/ProgramApeCrj/programapecrj.github.io/" id="view-on-github" target="_blank" class="button"><span>View on GitHub</span></a>
+	</div>
+</header>
+
+
+
+				
+				<!-- 内容部分 -->
+				<div class="content">
+
+					<h1>直接插入排序【上：图解理论】（分类：八大算法）</h1>
+					<p class="copyright">（微信[a997247716] 版权所有-陈润基,转载请注明来处）</p>
+					<section class="downloads clearfix back_to_index">
+						<a href="http://localhost:4000/index.html" id="back-to-index" class="button"><span>&lt;&lt; Back</span></a>
+					</section>
+					<h5>前言：学一个算法，需要先知道理论，然后再用代码实现，今天先说说理论。</h5>
+<br>
+<br>
+内容导航
+<ul>
+<li>1.军训的故事（一趟直接插入排序）</li>
+<li>2.完整的直接插入排序</li>
+<li>3.总结</li>
+</ul>
+
+
+<br>
+
+<h3>1.军训的故事</h3>
+<p>第一天军训的时候，大家已经排好队伍，基基却迟到了：</p>
+
+<img width="100%" 
+src="http://p2pko6fd6.bkt.clouddn.com/18-02-05.01.png" />
+<br>
+
+<p>教官很生气，罚他做100个俯卧撑，然后让他自己按身高从左到右，从小到大排好队。</p>
+
+<p>基基做完100个俯卧撑很累，判断力下降，远远看去阿巨好像比他矮，于是他先是走到阿巨的右边，这才发现阿巨人高马大，自己172 < 阿巨226，于是恳求阿巨和他交换一下位置。</p>
+
+<img width="100%" 
+src="http://p2pko6fd6.bkt.clouddn.com/18-02-05.02.png" />
+<br>
+
+<p>交换之后如下，但是此时基基又发现自己172 < 阿高198 ：</p>
+
+<img width="100%" 
+src="http://p2pko6fd6.bkt.clouddn.com/18-02-05.03.png" />
+<br>
+
+<p>于是基基让阿高也跟他换一下位置，阿高很不情愿，但还是和他换了位置，交换之后如下：</p>
+
+<img width="100%" 
+src="http://p2pko6fd6.bkt.clouddn.com/18-02-05.04.png" />
+<br>
+
+<p>本以为已经排好了，此时旁边的阿中拍了拍基基的肩膀，基基又发现自己172<阿中180，于是说了声抱歉，然后和阿中换了位置，交换后如下：</p>
+
+<img width="100%" 
+src="http://p2pko6fd6.bkt.clouddn.com/18-02-05.05.png" />
+<br>
+
+<p>最后，基基习惯性地让阿小跟他换一下位，阿小瞪了他一眼，基基才知道自己172>阿小155，于是他知道自己排好了，哼了一声，同时也松了一口气......</p>
+
+<img width="100%" 
+src="http://p2pko6fd6.bkt.clouddn.com/18-02-05.06.png" />
+<br>
+
+<p>以上只是插入排序的其中一趟排序过程。
+完整的插入排序是怎么样的呢？
+我们设想一下，
+当基基排好的时候，又来了一个迟到的......
+他也像基基一样慢慢地插入队伍中....
+插完之后，又来一个迟到的....
+<p>
+
+<h3>2.完整的直接插入排序</h3>
+<p>01.原始队伍如下，此时，我们可以假定a[ 1 ]后面的a[ 2 ]、a[ 3 ]...还没到，a[ 1 ]是迟到的，准备插队：</p>
+<img width="400px" 
+src="http://p2pko6fd6.bkt.clouddn.com/18-02-05.07.png" />
+<br>
+
+<p>02.第一趟排序中，a[ 1 ]和a[ 0 ]比较，发现自己比a[ 0 ]小，于是a[ 1 ]和a[ 0 ]交换，向前移动，
+到达队伍头部，第一趟插排序结束，结果如下：</p>
+<img width="400px" 
+src="http://p2pko6fd6.bkt.clouddn.com/18-02-05.08.png" />
+<h6>图片解释：a[ 1 ]和a[ 0 ]已经有序，此时a[ ２ ]是迟到者，准备插队.</h6>
+<br>
+
+<p>03.第二趟排序中，因为a[ 2 ] 和前面的a[ 0 ]比较，发现自己比较大，
+所以不用交换，排序结束。结果如下：</p>
+<img width="400px" 
+src="http://p2pko6fd6.bkt.clouddn.com/18-02-05.09.png" />
+<h6>图片解释：此时a[ ３ ]是迟到者，准备插队.</h6>
+<br>
+
+<p>04.第三趟排序中，a[ 3 ]先与a[ 2 ]比较，发现自己小，交换，又发现比a[ 0 ]小，再次交换，又发现比a[ 1 ]小，再次交换，直到到达队伍头部，停止排序。排完如下图：</p>
+<img width="400px"  
+src="http://p2pko6fd6.bkt.clouddn.com/18-02-05.10.png" />
+<h6>图片解释：此时a[ ４ ]是迟到者，准备插队.</h6>
+<br>
+
+<p>05.最后，a[ 4 ]与a[ 2 ]比较，发现自己不用动，于是留在了原位，至此排序结束：</p>
+<img width="400px" 
+src="http://p2pko6fd6.bkt.clouddn.com/18-02-05.11.png" />
+<h6>图片解释：a[ 0 ]，a [ 1 ]...只是他们的原始位置（名称），不代表最终在数组的位置，比如最终a[ 3 ]来到了原本a [ 0 ]的位置。 </h6>
+<br>
+
+<h3>3.总结</h3>
+
+<p>以上就是直接插入排序的理论图解，
+只要记住，直接插入排序就是”插队排序“，
+分有序队伍和未排序的队伍，
+每次插队，未排序队伍派出第一人（即迟到者），
+通过与有序的队伍逐人比较，进入到有序队伍里。</P>
+
+<br><br>
+
+<h5>结语：后面再讲代码实现。</h5>
+
+<br>
+<br>
+<h5>以上</h5>
+
+
+
+					<p class="author_date">发表于: 05 Feb 2018</p>
+
+				</div>
+				
+
+				<!-- 引用底部代码部分 -->
+				<footer>
+	<!-- <a href="http://yubiaobin.github.com/">返回首页</a> -->
+	<span>2018@陈润基</span>
+	
+	
+<!-- 
+	<script type="text/javascript">
+	var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+	document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3F7cfeeba2e3844f06b817b0b2cb423ce9' type='text/javascript'%3E%3C/script%3E"));
+	</script>
+-->
+	
+	<script>
+	var _hmt = _hmt || [];
+	(function() {
+	  var hm = document.createElement("script");
+	  hm.src = "https://hm.baidu.com/hm.js?ce5ca43ae7600468de9500d5cdca5f2b";
+	  var s = document.getElementsByTagName("script")[0]; 
+	  s.parentNode.insertBefore(hm, s);
+	})();
+	</script>
+
+</footer>
+
+
+
+			</div>
+		</div>
+　　 </body>
+</html>
