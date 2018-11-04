@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="keywords" content="crj">
+		<meta name="description" content="crj。">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Linux学习：常见命令（分类：Linux学习之旅）</title>
+		<link rel="icon" href="/img/favicon.ico" type="image/x-icon"/>
+		<link rel="shortcut icon" href="/img/favicon.ico" type="image/x-icon"/>
+		<link href="/css/layout.css" rel="stylesheet" media="screen">
+		<!-- <link href="/css/pygment_trac.css" rel="stylesheet" media="screen">-->
+　　 </head>
+　　 <body>
+		<div id="container">
+	       <div class="inner">
+				<!-- 引用头部代码部分 -->
+				<header>
+	<h1>ProgramApeCrj 's Blog</h1>
+    <h2><a href="http://programapecrj.github.io" target="_blank" class="header_jekyll">--  a small notebook</a></h2>
+    <div id="downloads" class="clearfix">
+		<a href="https://github.com/ProgramApeCrj/programapecrj.github.io/" id="view-on-github" target="_blank" class="button"><span>View on GitHub</span></a>
+	</div>
+</header>
+
+
+
+				
+				<!-- 内容部分 -->
+				<div class="content">
+
+					<h1>Linux学习：常见命令（分类：Linux学习之旅）</h1>
+					<p class="copyright">（微信[a997247716] 版权所有-陈润基,转载请注明来处）</p>
+					<section class="downloads clearfix back_to_index">
+						<a href="http://localhost:4000/index.html" id="back-to-index" class="button"><span>&lt;&lt; Back</span></a>
+					</section>
+					<p>前言：记录一些常用命令，为后面 Linux 的一些其他学习做准备。</p>
+
+<h4 id="导航">导航</h4>
+<ol>
+  <li>常见基本命令</li>
+  <li>文件操作</li>
+  <li>vim的使用</li>
+  <li>常见的一些组合命令</li>
+  <li>待补充</li>
+  <li>总结</li>
+</ol>
+
+<p><br /></p>
+<h1 id="1-常见基本命令">1. 常见基本命令</h1>
+
+<p>列出当前目录下的文件</p>
+<blockquote>
+  <p>ls</p>
+</blockquote>
+
+<p>输出当前所在目录</p>
+<blockquote>
+  <p>pwd</p>
+</blockquote>
+
+<p>跳转到根目录</p>
+<blockquote>
+  <p>cd  /</p>
+</blockquote>
+
+<p>跳转到上一级目录</p>
+<blockquote>
+  <p>cd ./</p>
+</blockquote>
+
+<p>返回上次的目录</p>
+<blockquote>
+  <p>cd -</p>
+</blockquote>
+
+<p><br /></p>
+<h1 id="2-文件操作">2. 文件操作</h1>
+
+<h3 id="创建">创建</h3>
+
+<p>创建目录：</p>
+
+<blockquote>
+  <p>mkdir test</p>
+</blockquote>
+
+<p>多级目录创建：</p>
+
+<blockquote>
+  <p>mkdir -p test1/test2/test3/test4</p>
+</blockquote>
+
+<p>创建并制定权限：</p>
+
+<blockquote>
+  <p>mkdir -m 711 test</p>
+</blockquote>
+
+<p>创建文件：</p>
+
+<blockquote>
+  <p>touch  test</p>
+</blockquote>
+
+<blockquote>
+  <p>vi   test</p>
+</blockquote>
+
+<h3 id="删除">删除</h3>
+
+<p>删除空文件：</p>
+<blockquote>
+  <p>rmdir test</p>
+</blockquote>
+
+<p>删除多级空目录 ：</p>
+<blockquote>
+  <p>rmdir -p test</p>
+</blockquote>
+
+<p>如果不管文件空不空：</p>
+<blockquote>
+  <p>rm test</p>
+</blockquote>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>可选参数
+-f ：就是 force 的意思，忽略不存在的文件，并且不会出现警告信息；
+-i ：互动模式，在删除前会询问使用者是否确认
+-r ：递归删除，要慎用！
+</code></pre></div></div>
+
+<h3 id="移动文件夹">移动文件（夹）：</h3>
+
+<p>移动单个文件（夹）：</p>
+
+<blockquote>
+  <p>mv [-fiu] source destination</p>
+</blockquote>
+
+<p>移动多个文件（夹）：</p>
+
+<blockquote>
+  <p>mv [-fiu] source1 source2 source3 …. destination</p>
+</blockquote>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>选项与参数：
+-f ：force 强制的意思，如果目标文件已经存在，不会询问而是直接覆盖；
+-i ：若目标文件 (destination) 已经存在时，询问是否覆盖。
+-u ：若目标文件已经存在，且 source 比较新，才会覆盖
+</code></pre></div></div>
+
+<p>另外，也可以用于修改某个文件（夹）的名字，如果当前目录不存在 test2 ，下面命令会把 test1 改名字为 test2：</p>
+<blockquote>
+  <p>mv test1 test2</p>
+</blockquote>
+
+<p>如果 test/ 目录不存在 test2，test1 移动到 test 里面后会改名字为 test12</p>
+<blockquote>
+  <p>mv test1 test/test2</p>
+</blockquote>
+
+<h3 id="文件夹复制">文件（夹）复制</h3>
+
+<blockquote>
+  <p>cp [-adfilprsu] source destination</p>
+</blockquote>
+
+<blockquote>
+  <p>cp [-adfilprsu] source1 source2 source3 …. directory</p>
+</blockquote>
+
+<p>cp 其实和 mv 差不多，只不过参数多了，在网上摘录了一些：</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>选项与参数：
+-a：相当下面 -pdr 的组合
+-d：若来源档为连结档的属性(link file)，则复制连结档属性而非文件本身；
+-f：为强制(force)的意思，若目标文件已经存在且无法开启，则移除后再尝试一次；
+-i：若目标档(destination)已经存在时，在覆盖时会先询问动作的进行(常用)
+-l：进行硬式连结(hard link)的连结档创建，而非复制文件本身；
+-p：连同文件的属性一起复制过去，而非使用默认属性(备份常用)；
+-r：递归持续复制，用於目录的复制行为；(常用)
+-s：复制成为符号连结档 (symbolic link)，亦即『捷径』文件；
+-u：若 destination 比 source 旧才升级 destination ！
+</code></pre></div></div>
+
+<h3 id="文件查找">文件查找</h3>
+
+<p>根据路径和名称查找：</p>
+
+<blockquote>
+  <p>find 路径 -name test</p>
+</blockquote>
+
+<p>如，全局遍历叫 crj 的文件：</p>
+
+<blockquote>
+  <p>find / -name crj</p>
+</blockquote>
+
+<p>模糊匹配，比如根据后缀</p>
+
+<blockquote>
+  <p>find / -name ‘*.jsp’</p>
+</blockquote>
+
+<p><br /></p>
+<h1 id="3-vim的使用">3. vim的使用</h1>
+
+<p>有个笑话，如何获取一段无意义，难以破解的乱码？</p>
+<blockquote>
+  <p>答案：让一个 Linux 新手使用 vim。</p>
+</blockquote>
+
+<h3 id="vim-是什么">vim 是什么？</h3>
+<p>是 vi 的升级版，支持多级撤销，跨平台，支持语法高亮，支持图形界面等。</p>
+
+<h3 id="操作模式">操作模式</h3>
+<ul>
+  <li>命令模式  等待用户输入命令（撤销，剪贴，复制等等命令）</li>
+  <li>输入模式  就是写东西呗</li>
+  <li>尾行模式（其实和命令模式差不多）  主要是输入保存，退出，搜索等指令</li>
+</ul>
+
+<h3 id="举个例子">举个例子：</h3>
+
+<p>vim 刚启动的时候，就是命令模式，不能打字。</p>
+
+<blockquote>
+  <p>敲击字母 i ，切换到输入模式</p>
+</blockquote>
+
+<p>输入完内容后</p>
+
+<blockquote>
+  <p>按下 esc 进入尾行模式</p>
+</blockquote>
+
+<p>输入 :wq 回车保存退出</p>
+
+<h3 id="常见操作">常见操作</h3>
+
+<p>打开文件：</p>
+<blockquote>
+  <p>vim abc</p>
+</blockquote>
+
+<p>打开后定位到尾行</p>
+<blockquote>
+  <p>vim + abc</p>
+</blockquote>
+
+<p>打开后定位到第三行</p>
+<blockquote>
+  <p>vim +5 abc</p>
+</blockquote>
+
+<p>定位到 xxx 第一次出现的位置，使用字母 n 可以切换出现的其他位置</p>
+<blockquote>
+  <p>vim +/xxx abc</p>
+</blockquote>
+
+<h3 id="底行模式常见命令可组合使用">底行模式常见命令（可组合使用）：</h3>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>:w 保存
+:q 退出
+:! 强制执行
+:ls 列出同时打开的所有文件
+:15 定位到15行
+/xxx 从光标开始，向后搜索 xxx 第一次出现的位置
+?xxx 从光标开始，向前搜索 xxx 第一次出现的位置
+</code></pre></div></div>
+
+<h3 id="命令模式下常见指令">命令模式下常见指令</h3>
+<p>移动光标</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>h: 光标左移
+j: 光标下移
+k: 光标上移
+l: 光标右移
+</code></pre></div></div>
+
+<p>翻页功能</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ctrl + f: 向下翻页
+ctrl + b: 向上翻页
+ctrl + d: 向下翻半页
+ctrl + u: 向上翻半页
+</code></pre></div></div>
+
+<p>增删改</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>dd: 删除光标所在行
+o : 在光标下一行插入一行，并切换成输入模式
+yy: 复制光标所在行
+</code></pre></div></div>
+
+<p><br /></p>
+<h1 id="4-常见的一些组合命令">4. 常见的一些组合命令</h1>
+
+<p>比如 | ，将前面的结果用于后面的命令。</p>
+
+<ul>
+  <li>例子：列出当前目录含有a的文件</li>
+</ul>
+
+<blockquote>
+  <p>ls | grep a</p>
+</blockquote>
+
+<ul>
+  <li>实际应用：php 查找 php.ini 的位置可以是：</li>
+</ul>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>php --ini
+或者
+php -ini | grep 'Configuration File'
+</code></pre></div></div>
+
+<p>比如 &gt; , 将某个命令的执行结果输出到文件夹中,</p>
+
+<ul>
+  <li>例子：将 ls 的结果输出到 ls.txt 中
+    <blockquote>
+      <p>ls &gt; ls.txt</p>
+    </blockquote>
+  </li>
+  <li>实际应用：laravel 列出路由表并保存：</li>
+</ul>
+
+<blockquote>
+  <p>php artisan route:list &gt; route.txt</p>
+</blockquote>
+
+<p><br /></p>
+<h1 id="5-待补充">5. 待补充</h1>
+<ul>
+  <li>分区</li>
+  <li>用户分组，权限</li>
+  <li>文件权限解释</li>
+  <li>网络配置</li>
+  <li>等等</li>
+</ul>
+
+<p><br /></p>
+<h1 id="6-总结">6. 总结</h1>
+<p>感觉熟能生巧，不会就查，只能这样。还有就是使用 man ，help 和提高看英文的能力。</p>
+
+<p><br /></p>
+<h4 id="后话">后话</h4>
+<p>溜了溜了、、、、</p>
+
+					<p class="author_date">发表于: 29 Sep 2018</p>
+
+				</div>
+				
+
+				<!-- 引用底部代码部分 -->
+				<footer>
+	<!-- <a href="http://yubiaobin.github.com/">返回首页</a> -->
+	<span>2018@陈润基</span>
+	
+	
+<!-- 
+	<script type="text/javascript">
+	var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+	document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3F7cfeeba2e3844f06b817b0b2cb423ce9' type='text/javascript'%3E%3C/script%3E"));
+	</script>
+-->
+	
+	<script>
+	var _hmt = _hmt || [];
+	(function() {
+	  var hm = document.createElement("script");
+	  hm.src = "https://hm.baidu.com/hm.js?ce5ca43ae7600468de9500d5cdca5f2b";
+	  var s = document.getElementsByTagName("script")[0]; 
+	  s.parentNode.insertBefore(hm, s);
+	})();
+	</script>
+
+</footer>
+
+
+
+			</div>
+		</div>
+　　 </body>
+</html>
