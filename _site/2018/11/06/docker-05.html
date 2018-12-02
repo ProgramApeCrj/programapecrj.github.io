@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="keywords" content="crj">
+		<meta name="description" content="crj。">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>docker 与 LNMP（分类：从0开始docker学习）</title>
+		<link rel="icon" href="/img/favicon.ico" type="image/x-icon"/>
+		<link rel="shortcut icon" href="/img/favicon.ico" type="image/x-icon"/>
+		<link href="/css/layout.css" rel="stylesheet" media="screen">
+		<!-- <link href="/css/pygment_trac.css" rel="stylesheet" media="screen">-->
+　　 </head>
+　　 <body>
+		<div id="container">
+	       <div class="inner">
+				<!-- 引用头部代码部分 -->
+				<header>
+	<h1>ProgramApeCrj 's Blog</h1>
+    <h2><a href="http://programapecrj.github.io" target="_blank" class="header_jekyll">--  a small notebook</a></h2>
+    <div id="downloads" class="clearfix">
+		<a href="https://github.com/ProgramApeCrj/programapecrj.github.io/" id="view-on-github" target="_blank" class="button"><span>View on GitHub</span></a>
+	</div>
+</header>
+
+
+
+				
+				<!-- 内容部分 -->
+				<div class="content">
+
+					<h1>docker 与 LNMP（分类：从0开始docker学习）</h1>
+					<p class="copyright">（微信[a997247716] 版权所有-陈润基,转载请注明来处）</p>
+					<section class="downloads clearfix back_to_index">
+						<a href="http://localhost:4000/index.html" id="back-to-index" class="button"><span>&lt;&lt; Back</span></a>
+					</section>
+					<p>前言：一般我们开发环境需要多个软件配合，平时是在一个系统中，所以不同软件进程中可以互相通信。但是现在是在不同的容器中，不同的容器间的进程是怎么互相访问的呢？</p>
+
+<p><br /></p>
+<h1 id="导航">导航</h1>
+<ol>
+  <li>前知条件</li>
+  <li>安装nginx</li>
+  <li>安装mysql</li>
+  <li>安装php-fpm</li>
+  <li>容器间互相通信</li>
+  <li>小demo测试</li>
+  <li>docker-composer</li>
+  <li>其他</li>
+  <li>总结</li>
+</ol>
+
+<p><br /></p>
+<h1 id="1-前知条件">1. 前知条件</h1>
+
+<p>首先要知道，docker的 容器通讯 提供了一种别名通讯的做法，确保容器间的通讯依赖的是一个固定的名称，而不是可能会变的 ip 地址。</p>
+
+<p>然后要了解一下两个命令：</p>
+
+<ul>
+  <li>–link</li>
+</ul>
+
+<p>这是一种过时的做法，link 具有方向性，如果需要互相访问就GG。</p>
+
+<ul>
+  <li>–network</li>
+</ul>
+
+<p>官方推荐做法，容器间共同依赖一个网络，从而实现互相访问。</p>
+
+<p><br /></p>
+<h1 id="2-安装-nginx">2. 安装 nginx</h1>
+<p>拉取镜像：</p>
+
+<blockquote>
+  <p>docker pull hub.c.163.com/library/nginx:latest</p>
+</blockquote>
+
+<p>启动容器：</p>
+
+<blockquote>
+  <p>docker run -p 80:80 –name mynginx -d hub.c.163.com/library/nginx</p>
+</blockquote>
+
+<p>复制目录：</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker container cp 容器名: /usr/share/nginx/html .
+docker container cp 容器名: /etc/nginx .
+mv nginx conf
+docker container cp 容器名: /var/log/nginx/ .
+mv nginx log
+</code></pre></div></div>
+
+<p><br /></p>
+<h1 id="3-安装-mysql">3. 安装 mysql</h1>
+
+<p>拉取镜像：</p>
+<blockquote>
+  <p>docker pull hub.c.163.com/library/mysql:latest</p>
+</blockquote>
+
+<p>启动容器：</p>
+<blockquote>
+  <p>docker run -d -p 3306:3306  –name mysql  -e MYSQL_ROOT_PASSWORD=123456 hub.c.163.com/library/mysql:latest</p>
+</blockquote>
+
+<p>复制目录：</p>
+
+<p>进到容器内，使用下面命令查看配置文件的位置</p>
+
+<blockquote>
+  <p>mysql –verbose –help | grep -A 1 ‘Default options’</p>
+</blockquote>
+
+<p>当然，也可以通过官方文档去查看：</p>
+
+<p>,cnf 文件位置</p>
+
+<p>data 文件位置</p>
+
+<p>错误日志 log 的位置需要自己找一下</p>
+
+<p>最终的复制命令如下：</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker container cp mysql:/etc/mysql/conf.d .
+docker container cp mysql:/var/lib/mysql .
+mv mysql data
+docker container cp mysql:/var/log/mysql .
+mv mysql log
+</code></pre></div></div>
+
+
+					<p class="author_date">发表于: 06 Nov 2018</p>
+
+				</div>
+				
+
+				<!-- 引用底部代码部分 -->
+				<footer>
+	<!-- <a href="http://yubiaobin.github.com/">返回首页</a> -->
+	<span>2018@陈润基</span>
+	
+	
+<!-- 
+	<script type="text/javascript">
+	var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+	document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3F7cfeeba2e3844f06b817b0b2cb423ce9' type='text/javascript'%3E%3C/script%3E"));
+	</script>
+-->
+	
+	<script>
+	var _hmt = _hmt || [];
+	(function() {
+	  var hm = document.createElement("script");
+	  hm.src = "https://hm.baidu.com/hm.js?ce5ca43ae7600468de9500d5cdca5f2b";
+	  var s = document.getElementsByTagName("script")[0]; 
+	  s.parentNode.insertBefore(hm, s);
+	})();
+	</script>
+
+</footer>
+
+
+
+			</div>
+		</div>
+　　 </body>
+</html>
