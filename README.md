@@ -1,7 +1,7 @@
-ProgramApeCrj--陈润基的博客
+陈润基的博客
 =======================
 
-###### 博客地址：https://blog.runjichen.com/
+###### 博客地址：http://www.runji.com/
 
 ###### 记录一些学习上的东东
 
