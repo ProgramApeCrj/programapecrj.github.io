@@ -1,0 +1,211 @@
+I"�"<p>前言：以前学Java的时候，看过《阿里编程开发规范手册》，也写过<a href="https://programapecrj.github.io/2018/04/01/specification-00.html">《Java书写格式规范》</a>，本来后面想接着写命名规范，分层规范的，但是偷懒了。今天借着最近写 PHP 遇到的规范问题，继续讨论一下。</p>
+
+<p><br /></p>
+<h4 id="导航">导航</h4>
+<ol>
+  <li>为什么需要规范</li>
+  <li>要遵循谁的规范</li>
+  <li>具体有哪些规范</li>
+  <li>总结</li>
+</ol>
+
+<p><br /></p>
+<h1 id="1-为什么需要规范">1. 为什么需要规范？</h1>
+
+<p>说规范，说的抽象一点，就是规则之下的自由，才是真正的自由。编码能力很强的大佬一般都会遵守规范，何况我这种弱鸡。</p>
+
+<p>说的实在点，我觉得遵守规范主要有两个原因，</p>
+
+<p>一个是让别人看起来舒服，理解起来简单。</p>
+
+<p>一个是形成规范后，便于封装。</p>
+
+<p><br /></p>
+<h1 id="2-要遵循谁的规范">2. 要遵循谁的规范？</h1>
+
+<p>以前认为，《代码大全》一书的规范很好，要遵守书中的。看了《阿里手册》后，我觉得阿里很牛，应该听阿里的。进了公司之后，才明白：
+公司制定的规范 &gt; 普遍制定规范 &gt; 个人自己规范。</p>
+
+<p>因为公司一般会在普遍的规范的基础上，制定属于公司的规范，首当其冲应该遵守。普遍的规范和个人自己的规范，可以体现在个人项目中，但不是集体项目中。</p>
+
+<p>这三个月为了遵守公司规范，我改了一些习惯，比如局部变量驼峰法，改成了下划线法。类大括号不换行，改成了换行等等……不过现在已经切换自如了。</p>
+
+<p><br /></p>
+<h1 id="3-具体有哪些规范">3. 具体有哪些规范？</h1>
+<p>包括但不限于</p>
+<ul>
+  <li>代码格式</li>
+  <li>命名规范</li>
+  <li>分层规范</li>
+  <li>注释规范</li>
+</ul>
+
+<p><br /></p>
+<h2 id="31-代码格式">3.1 代码格式</h2>
+<p>先讲讲代码格式。代码格式的话，主要是统一，看的舒服为主。比如缩进多少空格，大括号换不换行，然后每行多少个字符为宜等等，以前<a href="https://programapecrj.github.io/2018/04/01/specification-00.html">《Java书写格式规范》</a>也说过。</p>
+
+<p>但是其实，最好的办法不是记，而是IDE安个插件，一键格式化。</p>
+
+<p>还有个比较特别的规范，在文件最后留一个空行。</p>
+
+<p>然后尽量形成一种风格，或者说团队风格。比如一些类似的业务办法，约定开始做什么（如参数接收整理），中间做什么（如校验一些规则），最后返回什么。且同个办法又根据做的事情，区分形成代码块，用空行隔开。</p>
+
+<p>类似这样去遵循一些规律，哪怕你办法逻辑比较多，比较复杂，别人也能大概知道哪部分干了什么。</p>
+
+<p>有一个终极终极目标就是，多个人写的代码像一个人写的风格。</p>
+
+<p><br /></p>
+<h2 id="32-命名规范">3.2 命名规范</h2>
+
+<p>一般命名规范要注意的问题有：</p>
+
+<h4 id="不同功能的变量的命名">不同功能的变量的命名</h4>
+
+<ul>
+  <li>成员变量：下划线命名法（PHP居多），驼峰法（Java居多）</li>
+  <li>局部变量：下划线命名法（PHP居多），驼峰法（Java居多）</li>
+  <li>常量：下划线 + 全大写</li>
+</ul>
+
+<h4 id="不同功能的办法命名">不同功能的办法命名</h4>
+
+<p>一般办法都是首字母小写的驼峰，基本一些业务命名规范如下：</p>
+
+<ul>
+  <li>增加相关 create()，add()，store()</li>
+  <li>删除相关 deleteByXx()</li>
+  <li>修改相关 update()，edit()</li>
+  <li>列出相关 index()，lists()，selectByXxx()， getXxxByXxx()，show()，info()</li>
+  <li>布尔值 isXxx()</li>
+</ul>
+
+<p>具体用哪些以团队规范为主。但其实，很多时候命名规范也因语言，框架而异。</p>
+
+<p>比如 PHP 有时用通过下划线开头来表示私有方法或者属性。</p>
+
+<p>而 Java 的 Pojo 类，也有自己的命名特点。比如 DO 结尾代表业务实体(对应数据库一张表)，DTO 结尾的代表展示层与服务层之间的数据传输对象，VO 结尾的代表用于传递给展示层的对象…等等诸多规范。</p>
+
+<p>还有 Java 一般都会分 Dao 和 Service 层，所以命名上还有一些 XxxDao ，XxxService 。所以说不同语言间也有自己一些特定命名。</p>
+
+<p>如果抛开语言的话，有三个问题我觉得应该思考：</p>
+
+<p>第一个，是否要避免累述？比如文件夹名有了，类名是否还要加上后缀？办法名是否需要加上类名？</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>type / xxType 和 type / yyType 　还是写成 　type / xx 和　type / yy
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>student -&gt; getInfo() 　还是写成 　student -&gt; getStudentInfo()
+</code></pre></div></div>
+
+<p>第二，以短为准还是以准确为准:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$data  还是  $student_data
+</code></pre></div></div>
+
+<p>第三，如何让变量名形成一定的风格</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>查询用的筛选数组统一命名？更新用的数组统一命名？等等、、、、
+</code></pre></div></div>
+
+<p>命名是我接下来要注意的点，以前起的命名的确也是英文，也遵守什么驼峰下划线之类，但大多时候都是感动自己，自己看懂罢了。</p>
+
+<p><br /></p>
+<h2 id="33-分层规范">3.3 分层规范</h2>
+
+<p>如果不算框架中的中间件，过滤器或拦截器，切面等等模块的话，一般MVC框架的分层为：</p>
+
+<p>Java 会分四层，视图 V，控制器 C，而 M 则还分为 Service 层和 Dao 层。</p>
+
+<p>PHP 习惯分三层（因人而异），视图 V，控制器 C 和模型层 M。</p>
+
+<p>至于各分层的返回值，Java 会根据返回类型去定义不同的 Pojo 类，创建对象返回（毕竟万物皆对象嘛）。</p>
+
+<p>而PHP我一直是直接用数组去作为返回值：</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$res = [ 'code'  =&gt;  200,  msg  =&gt;  'xx',  data  =&gt;  [ ]  ];
+</code></pre></div></div>
+
+<p>不过还有一点现在比较纠结，参数校验的话，是放在控制层好还是模型层呢？</p>
+
+<p><br /></p>
+<h2 id="34-注释规范">3.4 注释规范</h2>
+
+<p>PHP 没有像 Java 一样的 throws 关键字，来将异常抛出给上层调用者。所以办法中没有捕获的异常，一般都要在注释上写上：</p>
+
+<blockquote>
+  <p>@throw Excetpion</p>
+</blockquote>
+
+<p>PHP 的一些 IDE 会去检查，没有加上注释即给出警告，防止上层没有处理异常。</p>
+
+<p>同时，PHP是弱类型，一般需要在办法注释上写上参数接受的类型（当然高版本也允许强制规范），然后返回什么参数也要写明白，一般不要出现返回多种类型的情况。</p>
+
+<p>以下是几种常见的注释</p>
+
+<ul>
+  <li>类注释</li>
+</ul>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/*
+* 这个类做了什么
+*
+* @author 陈润基
+* @email xxxxx
+* @since 1.0
+*/
+</code></pre></div></div>
+
+<ul>
+  <li>办法注释</li>
+</ul>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/*
+* 这个办法做了什么
+*
+* @param int $xxx
+* @return string
+*/
+</code></pre></div></div>
+
+<ul>
+  <li>代码行注释</li>
+</ul>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>代码xxxx // 注释
+</code></pre></div></div>
+<ul>
+  <li>代码块注释</li>
+</ul>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// 注释
+代码xxx
+代码xxx
+</code></pre></div></div>
+
+<p>。。。。待补充</p>
+
+<p><br /></p>
+<h2 id="35-其他">3.5 其他</h2>
+<p>还有很多很多其他的规范，一时间说不完。</p>
+
+<p>比如状态码的规范，200 代表成功，400 代表错误，不能用 0 作为状态码之类的。</p>
+
+<p>再比如定义数据字典枚举，保证一些数字，英文代表的意义在所有地方相同。</p>
+
+<p>还有异常的定义，要区分业务上的和系统上的异常等等。</p>
+
+<p>。。。。</p>
+
+<p><br /></p>
+<h1 id="4-总结">4. 总结</h1>
+
+<p>总而言之，两个标准：</p>
+
+<ul>
+  <li>以团队规定为主</li>
+  <li>具体风格保持一致</li>
+</ul>
+
+<p><br /></p>
+<h4 id="结语说来简单做起来其实阻力多多">结语：说来简单，做起来其实阻力多多。。。</h4>
+:ET
