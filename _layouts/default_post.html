@@ -16,9 +16,12 @@
 		<div id="container">
 	       <div class="inner">
 				<!-- 引用头部代码部分 -->
-				{% include header.html %}
-
 				
+				<header>
+					<h1>Crj's Blog</h1>
+					<h2><a href="{{site.data.host_url}}" target="_blank" class="header_jekyll">--  a small notebook</a></h2>
+				</header>
+
 				<!-- 内容部分 -->
 				<div class="content">
 
@@ -28,9 +31,10 @@
 						<a href="{{site.data.host_url}}" id="back-to-index" class="button"><span>&lt;&lt; Back</span></a>
 					</section>
 					{{ content }}
-					<p class="author_date">发表于: {{ page.date | date_to_string }}</p>
+					<p class="author_date">发布于: {{ page.date | date_to_string }}</p>
 
 				</div>
+				<h5><a href="{{site.data.host_url}}" ><span> 点我回到首页</span></a></h5>
 				
 
 				<!-- 引用底部代码部分 -->

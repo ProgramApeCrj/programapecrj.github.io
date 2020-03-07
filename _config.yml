@@ -1,2 +1,4 @@
 baseurl:
-
+# Build settings
+markdown:   
+permalink: /:year/:month/:day/:title

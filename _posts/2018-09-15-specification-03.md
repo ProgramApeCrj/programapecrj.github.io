@@ -1,6 +1,7 @@
 ---
 layout: default_post
-title : 再谈编程规范（分类：编程规范）
+title : 再谈编程规范
+category: 编程规范
 ---
 
 

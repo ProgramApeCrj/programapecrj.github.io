@@ -1,6 +1,7 @@
 ---
 layout: default_post
-title : 从理论到实践理解 https（分类：计算机基础）
+title : 从理论到实践理解 https
+category: web 开发
 ---
 
 

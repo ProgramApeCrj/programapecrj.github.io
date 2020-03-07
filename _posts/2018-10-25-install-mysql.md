@@ -1,6 +1,7 @@
 ---
 layout: default_post
-title : Linux 下安装 MySQL（分类：安装教程）
+title : Linux 下安装 MySQL
+category: 安装教程
 ---
 
 

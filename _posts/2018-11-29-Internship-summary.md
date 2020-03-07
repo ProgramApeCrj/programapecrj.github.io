@@ -1,6 +1,7 @@
 ---
 layout: default_post
-title : 半年回顾（分类：总结）
+title : 半年回顾
+category: 总结类
 ---
 
 
