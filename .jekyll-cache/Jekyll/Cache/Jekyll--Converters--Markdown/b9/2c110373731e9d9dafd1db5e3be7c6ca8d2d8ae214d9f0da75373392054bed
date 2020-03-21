@@ -1,0 +1,60 @@
+I"
+<p>前言：前面已经用代码实现了直接插入排序，现在看有哪些可以改进和对算法进行一些分析。</p>
+
+<h4 id="导航">导航</h4>
+<ol>
+  <li>代码优化</li>
+  <li>时间复杂度</li>
+  <li>空间复杂度</li>
+  <li>算法稳定性</li>
+  <li>适用场景</li>
+  <li>总结</li>
+</ol>
+
+<p><br /></p>
+<h1 id="1-代码优化">1. 代码优化</h1>
+
+<p>其实很简单，就是找不到的时候直接 break 即可，这样就避免了继续无畏的比较</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    public static void sort(Comparable[] a) {
+            int N = a.length;  
+            for(int i = 1; i &lt;= N-1; i++){  
+                for(int j = i; j &gt; 0; j--) { 
+                    if(SortUtil.less(a[j], a[j-1])) { 
+                        SortUtil.exch(a, j, j-1);
+                    }else {
+                        break; // 不用交换的时候记得停住！！
+                    }
+                }
+                System.out.print("当i为"+i+"--&gt;");
+                SortUtil.show(a);
+            }
+    }
+</code></pre></div></div>
+
+<p>另外，其实算法里有一个很有用的角色叫做哨兵，可以用来简化很多边界问题的判断，（比如链表会用到哨兵作为头结点），有了哨兵我们可以写成下面那样，减少一些无谓的判断。不过这样会增加理解成本：</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    public static void sortWithSentry(Comparable[] a) {
+        int N = a.length;  
+        int i, j;	
+        for(i = 2; i &lt; N; i++){  // 
+            a[0] = a[i];
+            for(j = i - 1; SortUtil.more(a[j], a[0]); j--) { 
+                a[j+1]=a[j];
+            }
+            a[j+1]=a[0];
+
+            System.out.print("当i为"+i+"--&gt;");
+            SortUtil.show(a);
+        }
+    }
+</code></pre></div></div>
+
+<p><br /></p>
+<h1 id="2-时间复杂度">2. 时间复杂度</h1>
+
+<p>最好情况下，数组本身已经是有序的，第二层循环基本不需要，每次插入只需要判断一次，所以复杂度是 O(n)</p>
+
+<p>插入排序的时间复杂度分析。在最坏情况下，数组完全逆序，插入第2个元素时要考察前1个元素，插入第3个元素时，要考虑前2个元素，……，插入第N个元素，要考虑前 N - 1 个元素。因此，最坏情况下的比较次数是 1 + 2 + 3 + … + (N - 1)，等差数列求和，结果为 N^2 / 2，舍去常量 1/2 ,所以最坏情况下的复杂度为 O(N^2)</p>
+
+:ET
