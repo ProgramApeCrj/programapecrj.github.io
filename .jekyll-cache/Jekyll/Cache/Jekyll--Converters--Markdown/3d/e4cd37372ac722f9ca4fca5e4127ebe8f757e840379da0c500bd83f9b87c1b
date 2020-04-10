@@ -1,39 +1,4 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-	<head>
-		<meta charset="utf-8">
-		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-		<meta name="keywords" content="crj">
-		<meta name="description" content="crj。">
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<title>第一个docker化的Java项目</title>
-		<link rel="icon" href="/img/favicon.ico" type="image/x-icon"/>
-		<link rel="shortcut icon" href="/img/favicon.ico" type="image/x-icon"/>
-		<link href="/css/layout.css" rel="stylesheet" media="screen">
-		<!-- <link href="/css/pygment_trac.css" rel="stylesheet" media="screen">-->
-　　 </head>
-　　 <body>
-		<div id="container">
-	       <div class="inner">
-				<!-- 引用头部代码部分 -->
-				
-				<header>
-					<h2>陈润基的个人博客</h2>
-					<!-- <h2><a href="http://www.runjichen.com" target="_blank" class="header_jekyll">--  a small notebook</a></h2> -->
-				</header>
-
-
-
-				<!-- 内容部分 -->
-				<div class="content">
-					<h1>第一个docker化的Java项目</h1>
-					<p class="copyright">（微信[a997247716] 版权所有-陈润基,转载请注明来处）</p>
-					<section class="downloads clearfix back_to_index">
-						<h5><a href="http://www.runjichen.com" ><span> 回到首页</span></a> / <a href="http://www.runjichen.com/0101/01/01/category.html" ><span> 回到分类</span></a></h5> 
-
-						<!-- <a href="http://www.runjichen.com" id="back-to-index" class="button"><span>&lt;&lt; Back</span></a> -->
-					</section>
-					<p>前言：上次简单启动了一个 Nginx 服务器容器，并成功访问到服务器。现在来试试，如何将一个项目放进 Tomcat 容器里并访问到。</p>
+I")<p>前言：上次简单启动了一个 Nginx 服务器容器，并成功访问到服务器。现在来试试，如何将一个项目放进 Tomcat 容器里并访问到。</p>
 
 <p><br /></p>
 <h2 id="导航">导航</h2>
@@ -286,40 +251,4 @@ COPY ./jpress.war /usr/local/tomcat/webapps
 
 <h5 id="后话事实上上面只是罗列过程完整走下来其实坑还是很多的比如tomcat启动十几分钟如何解决等等问题也是搞了好一阵子这些坑后面再慢慢讲接下来还有更多的坑等着加油">后话：事实上，上面只是罗列过程，完整走下来其实坑还是很多的，比如tomcat启动十几分钟如何解决等等问题……也是搞了好一阵子，这些坑后面再慢慢讲，接下来还有更多的坑等着……加油！！！</h5>
 
-
-					<p class="author_date">发布于: 29 Jul 2018</p>
-
-				</div>
-				<h5><a href="http://www.runjichen.com" ><span> 回到首页</span></a> / <a href="http://www.runjichen.com/0101/01/01/category.html" ><span> 回到分类</span></a></h5> 
-				
-
-				<!-- 引用底部代码部分 -->
-				<footer>
-	<br>
-	<span><a href="http://www.beian.miit.gov.cn">粤ICP备18142966号</a></span>
-	
-<!-- 
-	<script type="text/javascript">
-	var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
-	document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3F7cfeeba2e3844f06b817b0b2cb423ce9' type='text/javascript'%3E%3C/script%3E"));
-	</script>
--->
-	
-	<script>
-	var _hmt = _hmt || [];
-	(function() {
-	  var hm = document.createElement("script");
-	  hm.src = "https://hm.baidu.com/hm.js?ce5ca43ae7600468de9500d5cdca5f2b";
-	  var s = document.getElementsByTagName("script")[0]; 
-	  s.parentNode.insertBefore(hm, s);
-	})();
-	</script>
-
-</footer>
-
-
-
-			</div>
-		</div>
-　　 </body>
-</html>
+:ET
