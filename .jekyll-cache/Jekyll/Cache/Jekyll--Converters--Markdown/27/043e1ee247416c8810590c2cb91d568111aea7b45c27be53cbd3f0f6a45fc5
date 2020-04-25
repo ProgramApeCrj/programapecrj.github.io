@@ -1,0 +1,307 @@
+I"�<p>前言：初学的时候总是什么什么集成开发环境，或者用 docker 安装，还没好好在 Linux 下用源码安装 PHP。今天就搞一把 PHP 安装先。</p>
+
+<h4 id="导航">导航</h4>
+<ol>
+  <li>下载</li>
+  <li>相关依赖一览</li>
+  <li>安装前的配置</li>
+  <li>编译</li>
+  <li>安装</li>
+  <li>相关配置</li>
+  <li>总结</li>
+</ol>
+
+<p><br /></p>
+<h1 id="1-下载">1. 下载</h1>
+
+<ul>
+  <li>官网地址：</li>
+</ul>
+
+<blockquote>
+  <p>http://php.net</p>
+</blockquote>
+
+<ul>
+  <li>下载地址：</li>
+</ul>
+
+<blockquote>
+  <p>http://php.net/downloads.php</p>
+</blockquote>
+
+<ul>
+  <li>下载命令</li>
+</ul>
+
+<blockquote>
+  <p>wget http://am1.php.net/get/php-7.2.12.tar.gz/from/this/mirror</p>
+</blockquote>
+
+<ul>
+  <li>进入下载目录，解压：</li>
+</ul>
+
+<blockquote>
+  <p>tar -xzf mirror</p>
+</blockquote>
+
+<p><br /></p>
+<h1 id="2-相关依赖一览">2. 相关依赖一览</h1>
+
+<h4 id="gcc">gcc</h4>
+
+<blockquote>
+  <p>yum -y install gcc-c++</p>
+</blockquote>
+
+<h4 id="zlib-和-zlib-devel">zlib 和 zlib-devel</h4>
+
+<blockquote>
+  <p>yum install zlib</p>
+</blockquote>
+
+<blockquote>
+  <p>yum install zlib-devel</p>
+</blockquote>
+
+<h4 id="libxml2-以及-libxml2-devel">libxml2 以及 libxml2-devel</h4>
+
+<blockquote>
+  <p>yum install  libxml2</p>
+</blockquote>
+
+<blockquote>
+  <p>yum install libxml2-devel</p>
+</blockquote>
+
+<h4 id="libxslt-以及-libxslt-devel">libxslt 以及 libxslt-devel</h4>
+
+<blockquote>
+  <p>yum install libxslt</p>
+</blockquote>
+
+<blockquote>
+  <p>yum install libxslt-devel</p>
+</blockquote>
+
+<h4 id="openssl-以及-openssl-devel">openssl 以及 openssl-devel</h4>
+<blockquote>
+  <p>yum install openssl</p>
+</blockquote>
+
+<blockquote>
+  <p>yum install  openssl-devel</p>
+</blockquote>
+
+<h4 id="jpeg-和-png">jpeg 和 png</h4>
+
+<blockquote>
+  <p>yum install libjpeg libpng ibjpeg-devel libpng-devel</p>
+</blockquote>
+
+<h4 id="freetype-以及-freetype-devel">freetype 以及 freetype-devel</h4>
+<blockquote>
+  <p>yum install freetype</p>
+</blockquote>
+
+<blockquote>
+  <p>yum install  freetype-devel</p>
+</blockquote>
+
+<h4 id="gd">gd</h4>
+<blockquote>
+  <p>yum install gd</p>
+</blockquote>
+
+<h4 id="curl">curl</h4>
+
+<blockquote>
+  <p>yum install curl</p>
+</blockquote>
+
+<blockquote>
+  <p>yum install curl-devel</p>
+</blockquote>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>注：
+使用 yum list installed  可以查看使用 yum 安装了哪些依赖包
+使用 rpm -qa | grep xxx 可以查看是否安装了 xxx
+xxx-devel 是 xxx 软件的开发包，包含头文件以及静态库甚至源码。
+</code></pre></div></div>
+
+<p><br /></p>
+<h1 id="3-安装前的配置">3. 安装前的配置</h1>
+
+<p><br /></p>
+<ul>
+  <li>查看可以自定义的配置：</li>
+</ul>
+
+<blockquote>
+  <p>./configure –help</p>
+</blockquote>
+
+<ul>
+  <li>需要注意的有如下几个：</li>
+</ul>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>--prefix  =  安装目录
+
+--with-xxx    xxx 是要安装的拓展【如果拓展已经在本地安装了，也可也用 = 去指定目录】
+
+--enable-xxx   xxx是需要激活的拓展功能
+
+--with-config-file-path=  php.ini文件位置
+
+--sysconfdir= 其他配置文件的位置，不指定默认是在 安装目录 / etc 下
+</code></pre></div></div>
+
+<ul>
+  <li>最终执行命令如下（我自定义了安装目录 和 php.ini 的位置）：</li>
+</ul>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./configure \
+--prefix=/home/install/php/php7 \
+--with-config-file-path=/home/install/php/php7-ini \
+--with-curl \
+--with-freetype-dir \
+--with-gd \
+--with-gettext \
+--with-iconv-dir \
+--with-kerberos \
+--with-libdir=lib64 \
+--with-libxml-dir \
+--with-mysqli \
+--with-openssl \
+--with-pcre-regex \
+--with-pdo-mysql \
+--with-pdo-sqlite \
+--with-pear \
+--with-png-dir \
+--with-xmlrpc \
+--with-xsl \
+--with-zlib \
+--enable-fpm \
+--enable-bcmath \
+--enable-libxml \
+--enable-inline-optimization \
+--enable-mbregex \
+--enable-mbstring \
+--enable-opcache \
+--enable-pcntl \
+--enable-shmop \
+-enable-soap \
+--enable-sockets \
+--enable-sysvsem \
+--enable-xml \
+--enable-zip \
+--disable-fileinfo
+
+
+</code></pre></div></div>
+
+<p>成功则提示</p>
+
+<p><img src="http://www.runjichen.com/img/18-10-16@01.png" alt="image" /></p>
+
+<p><br /></p>
+<h1 id="4-编译">4. 编译</h1>
+
+<h4 id="执行-编译">执行 编译</h4>
+
+<blockquote>
+  <p>make</p>
+</blockquote>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>注意：可能会出现 
+
+make: *** [ext/fileinfo/libmagic/apprentice.lo] Error 1 
+
+是因为服务器内存不足1G，在上面配置时  ./configure 时加参数 --disable-fileinfo 即可。
+</code></pre></div></div>
+
+<h4 id="成功提示">成功提示</h4>
+<p><img src="http://www.runjichen.com/img/18-10-16@02.png" alt="image" /></p>
+
+<p><br /></p>
+
+<h1 id="5-安装">5. 安装</h1>
+
+<h4 id="执行-安装">执行 安装</h4>
+
+<blockquote>
+  <p>make install</p>
+</blockquote>
+
+<h4 id="安装成功">安装成功</h4>
+<p><img src="http://www.runjichen.com/img/18-10-16@03.png" alt="image" /></p>
+
+<p><br /></p>
+<h1 id="6-相关配置-和-启动">6. 相关配置 和 启动</h1>
+
+<p><br /></p>
+<h4 id="拷贝一下配置示例文件-phpini">拷贝一下配置示例文件 php.ini</h4>
+
+<blockquote>
+  <p>cp php.ini-development  /home/install/php7-ini/php.ini</p>
+</blockquote>
+
+<h4 id="进到安装目录的-etc-中">进到安装目录的 etc 中</h4>
+
+<blockquote>
+  <p>cp  php-fpm.conf.default  php-fpm.conf</p>
+</blockquote>
+
+<h4 id="进到安装目录的-etcphp-fpmd-中">进到安装目录的 etc/php-fpm.d 中</h4>
+
+<blockquote>
+  <p>cp www.conf.default www.conf（配置用户的文件）</p>
+</blockquote>
+
+<h4 id="进到-sbin-中-启动-php-fpm">进到 sbin 中， 启动 php-fpm</h4>
+
+<blockquote>
+  <p>./php-fpm</p>
+</blockquote>
+
+<h4 id="查看是否启动-其实-php-fpm-模式就是启动监听了-9000-端口的进程">查看是否启动 (其实 php-fpm 模式，就是启动监听了 9000 端口的进程。)</h4>
+
+<blockquote>
+  <p>ps -ef | grep php</p>
+</blockquote>
+
+<h4 id="添加-php-到环境变量">添加 php 到环境变量</h4>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>vi  /etc/profile
+
+在末尾加入：
+PATH=$PATH:/home/install/php/php7/bin
+export PATH
+
+使改动立即生效：
+source /etc/profile
+</code></pre></div></div>
+
+<h4 id="查看版本">查看版本</h4>
+
+<blockquote>
+  <p>php -v</p>
+</blockquote>
+
+<p><br /></p>
+<h1 id="7-总结">7. 总结</h1>
+
+<p>总的来说，需要：</p>
+<ol>
+  <li>知道有哪些依赖</li>
+  <li>知道如何自定义配置</li>
+  <li>执行编译安装</li>
+  <li>按提示解决一些依赖、环境问题</li>
+  <li>知道各种配置文件的位置，知道如何启动</li>
+</ol>
+
+<p><br /></p>
+<h5 id="后话">后话</h5>
+<p>其实和安装 Nginx 差不多，或者说 Linux 下的安装都是这个样的。接下来需要去熟悉一下一些基本的配置。</p>
+:ET
