@@ -1,0 +1,178 @@
+I"c<p>前言：上次简单了解了一下docker的一些概念，是时候来个helloWorld了。</p>
+
+<p><br /></p>
+<h2 id="导航">导航</h2>
+<ul>
+  <li>1.环境的准备</li>
+  <li>2.docker安装和启动</li>
+  <li>3.第一个项目</li>
+  <li>4.不会停止的容器</li>
+  <li>5.总结</li>
+</ul>
+
+<p><br /></p>
+<h1 id="1环境的准备">1.环境的准备</h1>
+<p><br /></p>
+
+<p>用Linux作为学习环境是最好的，其他系统比如window系统可以：</p>
+<ul>
+  <li>01.用虚拟机模拟Linux环境</li>
+  <li>02.购买Linux云服务器</li>
+</ul>
+
+<p>因为学习docker到最后就是为了在服务器上用docker部署项目，
+所以这里我选择了使用云服务器作为环境学习docker，用的是CentOS7.4。</p>
+
+<p><br /></p>
+<h1 id="2docker安装和启动">2.docker安装和启动</h1>
+<p><br /></p>
+
+<h4 id="安装">安装</h4>
+<blockquote>
+  <p>yum -y install docker-io</p>
+</blockquote>
+
+<p><br /></p>
+<h4 id="验证是否安装成功">验证是否安装成功</h4>
+<blockquote>
+  <p>docker version</p>
+</blockquote>
+
+<p><br /></p>
+<h4 id="启动命令">启动命令</h4>
+<blockquote>
+  <p>sudo service docker start</p>
+</blockquote>
+
+<p><br /></p>
+<h1 id="3第一个项目">3.第一个项目</h1>
+<p><br /></p>
+
+<p>万物皆可HelloWorl，docker也不例外。</p>
+
+<p><br /></p>
+<h4 id="执行如下命令可以从docker-的官方仓库拉取hello-world镜像到本地">执行如下命令，可以从Docker 的官方仓库拉取hello-world镜像到本地，</h4>
+<blockquote>
+  <p>docker image pull hello-world</p>
+</blockquote>
+
+<p><br /></p>
+<h4 id="列出本地所有的镜像查看是否拉取成功">列出本地所有的镜像，查看是否拉取成功：</h4>
+<blockquote>
+  <p>docker image ls</p>
+</blockquote>
+
+<p><br /></p>
+<h4 id="运行该镜像">运行该镜像：</h4>
+<blockquote>
+  <p>docker container run hello-world</p>
+</blockquote>
+
+<p><br /></p>
+<h4 id="成功运行生成容器的话就会输出如下信息">成功运行生成容器的话，就会输出如下信息:</h4>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Hello from Docker!
+This message shows that your installation appears to be working correctly.
+...........（省略）
+</code></pre></div></div>
+<p><br /></p>
+
+<p>然后容器会自动停止，通过这个hello-world，
+大概就能理解到远程仓库，镜像，容器具体是什么了。</p>
+
+<p><br /></p>
+<h1 id="4不会停止的容器">4.不会停止的容器</h1>
+<p><br /></p>
+
+<p>上面的容器运行完就停止，
+接下来尝试拉取ngnix镜像，该镜像生成的容器可以运行在后台。</p>
+
+<p><br /></p>
+<h4 id="首先打开网易云的镜像网站">首先，打开网易云的镜像网站：</h4>
+<html>
+<a href="https://c.163yun.com/hub#/m/search/?keyword=nginx" target="_blank">[网易云镜像网站]</a>
+</html>
+
+<p><br /></p>
+<h4 id="然后点击第一个">然后点击第一个：</h4>
+<p><img src="http://127.0.0.1:4000/img/18-07-15@01.png" alt="image" /></p>
+
+<p><br /></p>
+<h4 id="复制下载命令">复制下载命令</h4>
+<p><img src="http://127.0.0.1:4000/img/18-07-15@02.png" alt="image" /></p>
+
+<p><br /></p>
+<h4 id="执行命令等待下载完成">执行命令,等待下载完成</h4>
+<blockquote>
+  <p>docker pull hub.c.163.com/library/nginx:latest</p>
+</blockquote>
+
+<p><br /></p>
+<h4 id="查看镜像">查看镜像</h4>
+<blockquote>
+  <p>docker images</p>
+</blockquote>
+
+<p><br /></p>
+<h4 id="可以看到除了hello-world镜像我们多了一个hubc163comlibrarynginx-的镜像">可以看到除了he\llo-world镜像，我们多了一个hub.c.163.com/library/nginx 的镜像</h4>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>REPOSITORY                    TAG                 IMAGE ID            CREATED             SIZE
+docker.io/hello-world         latest              e38bc07ac18e        2 months ago        1.85 kB
+hub.c.163.com/library/nginx   latest              46102226f2fd        14 months ago       109 MB
+</code></pre></div></div>
+<p><br /></p>
+<h4 id="运行该镜像成为容器">运行该镜像成为容器</h4>
+<blockquote>
+  <p>docker run -p 8888:80 –name mynginx -d hub.c.163.com/library/nginx</p>
+</blockquote>
+
+<p><br /></p>
+<h5 id="1-上面的--p--888880表示">(1) 上面的 -p  8888:80表示:</h5>
+<blockquote>
+  <p>容器中的nginx启动后，容器内访问nginx的端口为80，
+再将容器内的80端口映射到主机的8888端口。
+也就是说我们访问主机ip+8888端口其实就相当于访问容器内的80端口。</p>
+</blockquote>
+
+<p><br /></p>
+<h5 id="2-name-mynginx">(2) –name mynginx</h5>
+<blockquote>
+  <p>为容器起个名字，方便关闭容器</p>
+</blockquote>
+
+<p><br /></p>
+<h5 id="3--d">(3) -d</h5>
+<blockquote>
+  <p>后台运行</p>
+</blockquote>
+
+<p><br /></p>
+<h5 id="4-hubc163comlibrarynginx">(4) hub.c.163.com/library/nginx</h5>
+<blockquote>
+  <p>刚才拉取的镜像名称</p>
+</blockquote>
+
+<p><br /></p>
+<h4 id="运行后使用如下命令可以看到运行中的容器">运行后,使用如下命令可以看到运行中的容器</h4>
+<blockquote>
+  <p>docker ps</p>
+</blockquote>
+
+<p><br /></p>
+<h4 id="试着访问主机ip8888端口">试着访问主机ip+8888端口：</h4>
+<p><img src="http://127.0.0.1:4000/img/18-07-15@03.png" alt="image" /></p>
+
+<p><br /></p>
+<h4 id="关闭容器">关闭容器</h4>
+<blockquote>
+  <p>docker  kill 刚才起的容器名</p>
+</blockquote>
+
+<p><br /></p>
+<h1 id="5总结">5.总结</h1>
+<p>通过上面简单的了解，可以知道如何拉取镜像和启动容器。那么我们要如何部署自己的项目到容器里呢，后面再讲咯！</p>
+
+<p><br /></p>
+<h5 id="结语">结语</h5>
+<p>还是好多坑要填……</p>
+:ET
