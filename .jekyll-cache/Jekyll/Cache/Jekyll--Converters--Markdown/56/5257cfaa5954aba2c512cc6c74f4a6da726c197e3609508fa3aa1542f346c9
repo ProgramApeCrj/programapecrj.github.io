@@ -1,0 +1,169 @@
+I"3<p>今天总结一下 mysql 的事务。下面默认讲的都是 InnoDB 引擎。</p>
+
+<h4 id="导航">导航</h4>
+<ol>
+  <li>什么是事务</li>
+  <li>四种隔离级别</li>
+  <li>锁</li>
+  <li>mvcc</li>
+  <li>redolog binlog</li>
+  <li>总结</li>
+</ol>
+
+<p><br /></p>
+<h1 id="1-事务">1. 事务</h1>
+
+<p>网上其实最喜欢举得例子就是银行转账。假设 A 给 B 转钱，事务开始，A 扣钱，B 加钱，事务结束。只能同时发生或者同时失败。</p>
+
+<p>这样看来，事务就是让你的多个操作，要么全部成功，要么全部失败，不存在中间态。</p>
+
+<p>但事务的重要性不止如此。假设多次转账同时发生。A 给 B 转账的同一时刻，C 给 A 也转账了，怎么保证 A 的余额最终正确呢？这也是事务要控制的。</p>
+
+<p><br /></p>
+<h1 id="2-四种隔离级别">2. 四种隔离级别</h1>
+
+<p>一般来说，当多个操作（事务）并行的时候，可能发生如下事情</p>
+
+<blockquote>
+  <p>脏读： A 事务中访问到了 B 事务未提交的数据。</p>
+</blockquote>
+
+<blockquote>
+  <p>不可重复读：A 事务对同一条记录进行了两次 select，两次 select 结果不一样。</p>
+</blockquote>
+
+<blockquote>
+  <p>幻读：A 事务两次同条件 select 多条记录，但是两次 select 查询的条数不一样。</p>
+</blockquote>
+
+<p><br />
+虽然会有以上问题，但是不同的业务场景，对上面几种事情的容忍度并不一样，所以就产生了不同的隔离级别。</p>
+
+<blockquote>
+  <p>读未提交（read uncommitted）：
+允许脏读。</p>
+</blockquote>
+
+<blockquote>
+  <p>读提交（read committed）：
+禁止脏读，允许不可重复读。</p>
+</blockquote>
+
+<blockquote>
+  <p>可重复读（repeatable read）：
+禁止脏读和不可重复读取。可能会出现幻读。</p>
+</blockquote>
+
+<blockquote>
+  <p>串行化（serializable ）：
+最严格的限制，事务只能像队列一样串行执行，一般场景下也不会使用。</p>
+</blockquote>
+
+<p><br />
+上面只是定义不用隔离下的表现。真正的实现上体现在两方面，一个是锁，一个是多版本并发控制（MVCC）。repeatable read 比较常用，下面从 repeatable read 去看着两方面。</p>
+
+<p><br /></p>
+<h1 id="3-mvcc">3. mvcc</h1>
+
+<p>mvcc 是一种概念，叫多版本并发控制。为了减少资源冲突，减少锁的使用，每个事务保持自己的一份视图，不同的数据库实现可能不一样。</p>
+
+<p>在 mysql 中，mvcc 的实现就是 undo log。</p>
+
+<p>在 repeatable read 隔离级别下，由于事务一开始，会持有自己的一份视图，不受其他事务影响，这种叫快照读，保障了普通 select 语句不会出现脏读和不可重复读。</p>
+
+<p>有了快照读，那相应还有一种叫当前读。就是直接读取当前最新的数据。
+select 语句想使用当前读，可以加上for update。</p>
+
+<p><br /></p>
+<h1 id="4-锁">4. 锁</h1>
+
+<p>锁在资源竞争上是很常见的。</p>
+
+<p>mysql 的锁，在事务中，一旦加上，事务结束了才会释放。</p>
+
+<p>InnoDB中，实现了两种标准的行级锁：</p>
+
+<p>共享锁（S）：共享锁就是多个事务对同一数据加共享锁，都能访问到数据，但是只能读，其他人不能加排它锁（即不能改），加该锁主要是为了读的时候其他人不能改。</p>
+
+<p>排他锁（X）：获得排他锁的事务可以更新数据，其他事务无法再获取该数据的共享锁和排他锁，只能做等待。</p>
+
+<p>对于 update 、delete 、 insert 语句，InnoDB
+会默认给涉及数据集加排他锁。</p>
+
+<p>对于普通 select 语句，InnoDB 不会加任何锁， 普通 select 总能畅通无阻，也通过 mvcc 确保了可重复读。</p>
+
+<p>不过 select 语句也是可以显式地去加共享锁或排他锁：</p>
+
+<blockquote>
+  <p>SELECT * FROM table_name WHERE … LOCK IN SHARE MODE。</p>
+</blockquote>
+
+<blockquote>
+  <p>SELECT * FROM table_name WHERE … FOR UPDATE。</p>
+</blockquote>
+
+<p>当 where 条件带了主键或唯一索引，都属于行锁。行锁一般是锁在主键或者唯一索引上，如果是非主键或者唯一索引，也就是操作的记录是多条的情况下，就需要间隙锁出现了。</p>
+
+<p>InnoDB 引进间隙锁，在可重复读级别下就能解决幻读问题。</p>
+
+<blockquote>
+  <p>间隙锁(Gap Lock) : 锁定一个范围，但不包含记录本身</p>
+</blockquote>
+
+<blockquote>
+  <p>Next-Key Lock(就是间隙锁 + 行锁)：锁上一个范围，并且锁定记录本身</p>
+</blockquote>
+
+<p>但是一般来说很少业务需要这么严格防止幻读，连间隙锁都安排上了。一般单条记录的行锁用的比较多。</p>
+
+<p>其实要模拟也很简单，之前出过一个小事故，忘记给 item 字段加唯一索引，然后在并发下使用 select * from table where item = ‘xx’ for update，遇到了死锁，在排查死锁日志中，就发现 mysql 使用了间隙锁。</p>
+
+<p>记住就是，</p>
+<ul>
+  <li>普通的 select 不会用到任何锁，都是 mvcc 快照读。</li>
+  <li>用了锁之后全部变成当前读，就会产生锁竞争。</li>
+  <li>update、delete、insert 都是默认加锁，即使你不显式地开启事务。</li>
+</ul>
+
+<p><br /></p>
+<h1 id="5-redolog-binlog">5. redolog binlog</h1>
+
+<p>mysql 的数据总是先入 binlog, redolog，只记录数据变化，而不是真正的数据，然后在某个时候才到刷到存储数据的地方。</p>
+
+<p>虽然都是会涉及写磁盘，但由于 binlog, redolog 是顺序写，所以很快。</p>
+
+<p>binlog 是逻辑日志，记录的是 SQL 语句的原始逻辑；
+redo log 是物理日志，记录的是在某个数据页上做了什么修改。</p>
+
+<p>这两者的配合保障了任何异常情况（如宕机恢复）时，事务的原子性不会被破坏。</p>
+
+<ul>
+  <li>先写入 redo log，状态是 prepare。</li>
+  <li>写 binlog。</li>
+  <li>提交事务时, redo log 状态改为 commit 状态.</li>
+</ul>
+
+<p>当系统出现异常宕机时:</p>
+
+<p>binlog 有记录，并且redo log 状态 commit。是正常完成的事务，不需要恢复。</p>
+
+<p>binlog 有记录，redo log 状态 prepare。
+说明在提交事务之前宕机， 提交事务即可。</p>
+
+<p>binlog 无记录，redo log 状态 prepare。
+说明在 binlog 写完之前就宕机， 数据不完整，回滚该事务。</p>
+
+<p>binlog 无记录，redo log 无记录。说明在 redo log 写之前宕机， 数据不完整，回滚事务。</p>
+
+<p>之前有一次业务上的设计也借鉴了这种思维，有某个核心操作是网络 io，一开始记录一条发起状态 prepare 的数据，中间进行该核心操作, 记录操作结果。最后将数据改为 commit 状态，这时候无论哪个阶段宕机，都可以倒推进行到哪一步。</p>
+
+<p><br /></p>
+<h1 id="6-总结">6. 总结</h1>
+<ul>
+  <li>不同隔离级别事务表现不一样，不同业务的容忍度也不一样。</li>
+  <li>了解 mvcc 的作用</li>
+  <li>能明白各种锁的作用，语句会带来的锁竞争</li>
+  <li>了解mysql 如何巧妙地保证宕机后数据的原子性</li>
+</ul>
+
+:ET
